@@ -57,6 +57,7 @@ struct BodyViewBox {
         origin: CGPoint(x: 830, y: 0),
         size: CGSize(width: 500, height: 1430)
     )
+
 }
 
 /// Provides body path data for a given gender and side.

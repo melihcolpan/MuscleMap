@@ -23,7 +23,6 @@ struct AnimatedBodyContainer: View {
     let onMuscleDragged: ((Muscle, MuscleSide) -> Void)?
     let onMuscleDragEnded: (() -> Void)?
     let longPressDuration: Double
-
     @State private var currentHighlights: [Muscle: MuscleHighlight] = [:]
     @State private var previousHighlights: [Muscle: MuscleHighlight] = [:]
     @State private var progress: Double = 1.0

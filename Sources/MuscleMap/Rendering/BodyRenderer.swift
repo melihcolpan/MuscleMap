@@ -145,9 +145,11 @@ struct BodyRenderer {
                 }
             }
         }
+
     }
 
     /// Find which muscle was tapped at the given point.
+    /// Sub-groups are tested before their parent groups.
     func hitTest(at point: CGPoint, in size: CGSize) -> (Muscle, MuscleSide)? {
         let viewBox = BodyPathProvider.viewBox(gender: gender, side: side)
         let scale = min(
@@ -159,7 +161,15 @@ struct BodyRenderer {
 
         let bodyParts = BodyPathProvider.paths(gender: gender, side: side)
 
-        for bodyPart in bodyParts {
+        // Test sub-groups first so they take priority over parent groups
+        let sortedParts = bodyParts.sorted { a, b in
+            let aIsSub = a.slug.muscle?.isSubGroup ?? false
+            let bIsSub = b.slug.muscle?.isSubGroup ?? false
+            if aIsSub != bIsSub { return aIsSub }
+            return false
+        }
+
+        for bodyPart in sortedParts {
             guard let muscle = bodyPart.slug.muscle else { continue }
 
             for pathString in bodyPart.left {
@@ -229,6 +239,11 @@ struct BodyRenderer {
         }
         if let highlight {
             return highlight.fill
+        }
+        // Sub-group inheritance: if no highlight on sub-group, use parent's highlight
+        if let muscle = slug.muscle, let parent = muscle.parentGroup,
+           let parentHighlight = highlights[parent] {
+            return parentHighlight.fill
         }
         return .color(style.defaultFillColor)
     }

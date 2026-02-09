@@ -37,6 +37,10 @@ struct ContentView: View {
             HeatmapV2Demo()
                 .tabItem { Label("Heatmap V2", systemImage: "chart.bar.fill") }
                 .tag(7)
+
+            SubGroupsDemo()
+                .tabItem { Label("Sub-Groups", systemImage: "rectangle.split.3x3") }
+                .tag(8)
         }
     }
 }
@@ -612,6 +616,79 @@ struct HeatmapV2Demo: View {
         BodyView(gender: .male, side: .front)
             .heatmap(data, configuration: config)
             .animated(duration: 0.5)
+    }
+}
+
+// MARK: - Sub-Groups Demo
+
+struct SubGroupsDemo: View {
+    @State private var selectedMuscle: Muscle?
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 24) {
+                    Text("Muscle Sub-Groups")
+                        .font(.headline)
+
+                    Text("Sub-groups inherit parent highlight. Tap to see sub-group priority.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+
+                    HStack(spacing: 16) {
+                        BodyView(gender: .male, side: .front)
+                            .highlight(.chest, color: .red, opacity: 0.4)
+                            .highlight(.upperChest, color: .red, opacity: 0.9)
+                            .highlight(.quadriceps, color: .blue, opacity: 0.4)
+                            .highlight(.innerQuad, color: .blue, opacity: 0.9)
+                            .highlight(.abs, color: .orange, opacity: 0.4)
+                            .highlight(.upperAbs, color: .orange, opacity: 0.9)
+                            .highlight(.deltoids, color: .purple, opacity: 0.4)
+                            .highlight(.frontDeltoid, color: .purple, opacity: 0.9)
+                            .selected(selectedMuscle)
+                            .onMuscleSelected { muscle, _ in
+                                selectedMuscle = muscle
+                            }
+                            .frame(height: 350)
+
+                        BodyView(gender: .male, side: .back)
+                            .highlight(.trapezius, color: .green, opacity: 0.4)
+                            .highlight(.upperTrapezius, color: .green, opacity: 0.9)
+                            .highlight(.lowerTrapezius, color: .teal, opacity: 0.9)
+                            .highlight(.deltoids, color: .purple, opacity: 0.4)
+                            .highlight(.rearDeltoid, color: .purple, opacity: 0.9)
+                            .highlight(.rhomboids, color: .orange)
+                            .highlight(.rotatorCuff, color: .cyan)
+                            .selected(selectedMuscle)
+                            .onMuscleSelected { muscle, _ in
+                                selectedMuscle = muscle
+                            }
+                            .frame(height: 350)
+                    }
+                    .padding(.horizontal)
+
+                    if let muscle = selectedMuscle {
+                        VStack(spacing: 4) {
+                            Text(muscle.displayName)
+                                .font(.title3.bold())
+                            if muscle.isSubGroup, let parent = muscle.parentGroup {
+                                Text("Sub-group of \(parent.displayName)")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            if !muscle.subGroups.isEmpty {
+                                Text("Sub-groups: \(muscle.subGroups.map(\.displayName).joined(separator: ", "))")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                }
+                .padding(.vertical)
+            }
+            .navigationTitle("Sub-Groups")
+        }
     }
 }
 

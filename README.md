@@ -14,7 +14,8 @@ Supports **male & female** body models with **front & back** views.
 ## Features
 
 - SVG-based body rendering via SwiftUI `Canvas`
-- 22 muscle groups with left/right side detection
+- **36 muscle groups** (22 base + 4 new muscles + 10 sub-groups) with left/right side detection
+- **Muscle sub-groups** with parent/child inheritance and priority hit testing
 - Heatmap visualization with customizable color scales
 - Tap-to-select with hit testing
 - **Multi-select** (select multiple muscles at once)
@@ -39,7 +40,7 @@ Add to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/melihcolpan/MuscleMap.git", from: "1.3.0")
+    .package(url: "https://github.com/melihcolpan/MuscleMap.git", from: "1.4.0")
 ]
 ```
 
@@ -387,6 +388,27 @@ Button("Redo") { if let state = history.redo() { selectedMuscles = state } }
     .disabled(!history.canRedo)
 ```
 
+### Muscle Sub-Groups
+
+Sub-groups provide finer control over muscle regions. They inherit the parent muscle's highlight when no specific highlight is set, and take priority in hit testing.
+
+```swift
+// Highlight parent and sub-group with different intensities
+BodyView(gender: .male, side: .front)
+    .highlight(.chest, color: .red, opacity: 0.4)       // parent (dimmer)
+    .highlight(.upperChest, color: .red, opacity: 0.9)   // sub-group (brighter)
+    .highlight(.quadriceps, color: .blue, opacity: 0.4)
+    .highlight(.innerQuad, color: .blue, opacity: 0.9)
+```
+
+Query sub-group relationships:
+
+```swift
+Muscle.chest.subGroups       // [.upperChest, .lowerChest]
+Muscle.upperChest.parentGroup // .chest
+Muscle.upperChest.isSubGroup  // true
+```
+
 ### Gender & Side
 
 ```swift
@@ -397,6 +419,8 @@ BodyView(gender: .female, side: .back)  // Female back
 ```
 
 ## Available Muscles
+
+### Base Muscles
 
 | Muscle | Key |
 |--------|-----|
@@ -413,15 +437,34 @@ BodyView(gender: .female, side: .back)  // Female back
 | Hamstring | `.hamstring` |
 | Hands | `.hands` |
 | Head | `.head` |
+| Hip Flexors | `.hipFlexors` |
 | Knees | `.knees` |
 | Lower Back | `.lowerBack` |
 | Neck | `.neck` |
 | Obliques | `.obliques` |
 | Quadriceps | `.quadriceps` |
+| Rhomboids | `.rhomboids` |
+| Rotator Cuff | `.rotatorCuff` |
+| Serratus | `.serratus` |
 | Tibialis | `.tibialis` |
 | Trapezius | `.trapezius` |
 | Triceps | `.triceps` |
 | Upper Back | `.upperBack` |
+
+### Sub-Groups
+
+| Sub-Group | Key | Parent |
+|-----------|-----|--------|
+| Upper Chest | `.upperChest` | `.chest` |
+| Lower Chest | `.lowerChest` | `.chest` |
+| Upper Abs | `.upperAbs` | `.abs` |
+| Lower Abs | `.lowerAbs` | `.abs` |
+| Inner Quad | `.innerQuad` | `.quadriceps` |
+| Outer Quad | `.outerQuad` | `.quadriceps` |
+| Front Deltoid | `.frontDeltoid` | `.deltoids` |
+| Rear Deltoid | `.rearDeltoid` | `.deltoids` |
+| Upper Trapezius | `.upperTrapezius` | `.trapezius` |
+| Lower Trapezius | `.lowerTrapezius` | `.trapezius` |
 
 ## Requirements
 
