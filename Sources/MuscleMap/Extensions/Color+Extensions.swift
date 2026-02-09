@@ -18,7 +18,7 @@ import AppKit
 extension Color {
 
     /// Linearly interpolates between two colors.
-    func interpolate(to other: Color, fraction: Double) -> Color {
+    public func interpolate(to other: Color, fraction: Double) -> Color {
         let f = min(max(fraction, 0), 1)
 
         #if canImport(UIKit)

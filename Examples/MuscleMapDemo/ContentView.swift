@@ -33,6 +33,10 @@ struct ContentView: View {
             InteractiveV2Demo()
                 .tabItem { Label("Interactive V2", systemImage: "hand.draw") }
                 .tag(6)
+
+            HeatmapV2Demo()
+                .tabItem { Label("Heatmap V2", systemImage: "chart.bar.fill") }
+                .tag(7)
         }
     }
 }
@@ -468,6 +472,146 @@ struct InteractiveV2Demo: View {
             .padding(.vertical)
             .navigationTitle("Interactive V2")
         }
+    }
+}
+
+// MARK: - Heatmap V2 Demo
+
+struct HeatmapV2Demo: View {
+    @State private var threshold: Double = 0.0
+    @State private var useGradientFill = false
+    @State private var showAnimated = false
+    @State private var interpolation: InterpolationChoice = .linear
+
+    enum InterpolationChoice: String, CaseIterable {
+        case linear = "Linear"
+        case easeIn = "Ease In"
+        case easeOut = "Ease Out"
+        case easeInOut = "Ease In-Out"
+        case stepped = "Stepped"
+
+        var value: ColorInterpolation {
+            switch self {
+            case .linear: return .linear
+            case .easeIn: return .easeIn
+            case .easeOut: return .easeOut
+            case .easeInOut: return .easeInOut
+            case .stepped: return .step(count: 5)
+            }
+        }
+    }
+
+    private var upperBodyData: [MuscleIntensity] {
+        [
+            .init(muscle: .chest, intensity: 0.9),
+            .init(muscle: .deltoids, intensity: 0.7),
+            .init(muscle: .biceps, intensity: 0.5),
+            .init(muscle: .abs, intensity: 0.3),
+            .init(muscle: .obliques, intensity: 0.15),
+            .init(muscle: .forearm, intensity: 0.4),
+            .init(muscle: .quadriceps, intensity: 0.6),
+            .init(muscle: .triceps, intensity: 0.2)
+        ]
+    }
+
+    private var lowerBodyData: [MuscleIntensity] {
+        [
+            .init(muscle: .quadriceps, intensity: 0.9),
+            .init(muscle: .calves, intensity: 0.7),
+            .init(muscle: .abs, intensity: 0.2),
+            .init(muscle: .chest, intensity: 0.1),
+            .init(muscle: .obliques, intensity: 0.4),
+            .init(muscle: .adductors, intensity: 0.6)
+        ]
+    }
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 20) {
+                    // Controls
+                    GroupBox("Settings") {
+                        VStack(spacing: 12) {
+                            Picker("Interpolation", selection: $interpolation) {
+                                ForEach(InterpolationChoice.allCases, id: \.self) { choice in
+                                    Text(choice.rawValue).tag(choice)
+                                }
+                            }
+                            .pickerStyle(.segmented)
+
+                            HStack {
+                                Text("Threshold: \(threshold, specifier: "%.2f")")
+                                Slider(value: $threshold, in: 0...0.5, step: 0.05)
+                            }
+
+                            Toggle("Gradient Fill", isOn: $useGradientFill)
+                        }
+                    }
+                    .padding(.horizontal)
+
+                    // Animated heatmap toggle
+                    Button(showAnimated ? "Show Upper Body" : "Show Lower Body") {
+                        showAnimated.toggle()
+                    }
+                    .buttonStyle(.borderedProminent)
+
+                    // Body view with heatmap config
+                    HStack(alignment: .top, spacing: 8) {
+                        bodyView
+                            .frame(height: 420)
+
+                        HeatmapLegendView(
+                            colorScale: .thermal,
+                            interpolation: interpolation.value,
+                            orientation: .vertical,
+                            barThickness: 14,
+                            labelMin: "Rest",
+                            labelMax: "Max"
+                        )
+                        .frame(width: 50, height: 200)
+                        .padding(.top, 100)
+                    }
+                    .padding(.horizontal)
+
+                    // Horizontal legend
+                    HeatmapLegendView(
+                        colorScale: .thermal,
+                        interpolation: interpolation.value,
+                        labelMin: "Low",
+                        labelMax: "High"
+                    )
+                    .frame(width: 250)
+                    .padding(.horizontal)
+
+                    // Stepped preset demo
+                    GroupBox("Stepped Preset") {
+                        BodyView(gender: .female, side: .front)
+                            .heatmap(upperBodyData, colorScale: .workoutStepped)
+                            .frame(height: 350)
+                    }
+                    .padding(.horizontal)
+                }
+                .padding(.vertical)
+            }
+            .navigationTitle("Heatmap V2")
+        }
+    }
+
+    @ViewBuilder
+    private var bodyView: some View {
+        let data = showAnimated ? lowerBodyData : upperBodyData
+        let config = HeatmapConfiguration(
+            colorScale: .thermal,
+            interpolation: interpolation.value,
+            threshold: threshold > 0 ? threshold : nil,
+            isGradientFillEnabled: useGradientFill,
+            gradientDirection: .topToBottom,
+            gradientLowIntensityFactor: 0.3
+        )
+
+        BodyView(gender: .male, side: .front)
+            .heatmap(data, configuration: config)
+            .animated(duration: 0.5)
     }
 }
 

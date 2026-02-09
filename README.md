@@ -39,7 +39,7 @@ Add to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/melihcolpan/MuscleMap.git", from: "1.2.0")
+    .package(url: "https://github.com/melihcolpan/MuscleMap.git", from: "1.3.0")
 ]
 ```
 
@@ -136,10 +136,103 @@ BodyView(gender: .male, side: .front)
 | `.thermal` | blue -> green -> yellow -> red |
 | `.medical` | green -> yellow -> red |
 | `.monochrome` | light gray -> dark |
+| `.workoutStepped` | workout with 5 discrete steps |
+| `.thermalSmooth` | thermal with ease-in-out curve |
 
 Custom:
 ```swift
 let custom = HeatmapColorScale(colors: [.blue, .purple, .pink])
+```
+
+### Color Interpolation
+
+Control how intensity values map to colors across the scale:
+
+```swift
+// Ease-in-out for smoother transitions
+BodyView(gender: .male, side: .front)
+    .heatmap(data, colorScale: .thermal)
+    .heatmapInterpolation(.easeInOut)
+
+// Stepped (discrete levels)
+BodyView(gender: .male, side: .front)
+    .heatmap(data, colorScale: .workoutStepped)  // built-in 5-step preset
+
+// Custom curve
+.heatmapInterpolation(.custom { t in t * t * t })
+```
+
+Available interpolations: `.linear`, `.easeIn`, `.easeOut`, `.easeInOut`, `.step(count:)`, `.custom()`
+
+### Heatmap Threshold
+
+Hide muscles below a minimum intensity:
+
+```swift
+BodyView(gender: .male, side: .front)
+    .heatmap(data)
+    .heatmapThreshold(0.2)  // muscles with intensity < 0.2 are hidden
+```
+
+### Gradient Heatmap Fill
+
+Apply intra-muscle gradients based on intensity (low-to-high color within each muscle):
+
+```swift
+BodyView(gender: .male, side: .front)
+    .heatmap(data, colorScale: .thermal)
+    .heatmapGradient(direction: .topToBottom, lowFactor: 0.3)
+```
+
+Directions: `.topToBottom`, `.bottomToTop`, `.leftToRight`, `.rightToLeft`
+
+### Heatmap Configuration
+
+Combine all heatmap settings in a single configuration:
+
+```swift
+let config = HeatmapConfiguration(
+    colorScale: .thermal,
+    interpolation: .easeInOut,
+    threshold: 0.2,
+    isGradientFillEnabled: true,
+    gradientDirection: .topToBottom,
+    gradientLowIntensityFactor: 0.3
+)
+
+BodyView(gender: .male, side: .front)
+    .heatmap(data, configuration: config)
+```
+
+### Heatmap Legend
+
+Display a color bar legend alongside the body view:
+
+```swift
+// Horizontal legend
+HeatmapLegendView(colorScale: .workout)
+    .frame(width: 200)
+
+// Vertical legend with custom labels
+HeatmapLegendView(
+    colorScale: .thermal,
+    interpolation: .easeInOut,
+    orientation: .vertical,
+    barThickness: 20,
+    labelMin: "Rest",
+    labelMax: "Max"
+)
+.frame(width: 60, height: 200)
+```
+
+### Animated Heatmap Transitions
+
+When using `.animated()`, color transitions between heatmap states are now smoothly interpolated:
+
+```swift
+BodyView(gender: .male, side: .front)
+    .heatmap(currentData, colorScale: .thermal)
+    .animated(duration: 0.5)
 ```
 
 ### Styles

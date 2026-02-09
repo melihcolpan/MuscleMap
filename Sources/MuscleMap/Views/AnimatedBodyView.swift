@@ -99,11 +99,12 @@ struct AnimatedBodyContainer: View {
                     opacity: old.opacity * (1.0 - progress)
                 )
             case (let old?, let new?):
-                // Cross-fade: blend opacity
+                // Cross-fade: blend opacity and fill
                 let blendedOpacity = old.opacity + (new.opacity - old.opacity) * progress
+                let blendedFill = Self.blendFills(from: old.fill, to: new.fill, progress: progress)
                 result[muscle] = MuscleHighlight(
                     muscle: muscle,
-                    fill: new.fill,
+                    fill: blendedFill,
                     opacity: blendedOpacity
                 )
             case (nil, nil):
@@ -112,6 +113,17 @@ struct AnimatedBodyContainer: View {
         }
 
         return result
+    }
+
+    /// Blends two fills together. Only color-to-color fills are interpolated;
+    /// mixed fill types use a crossfade switch at the halfway point.
+    private static func blendFills(from oldFill: MuscleFill, to newFill: MuscleFill, progress: Double) -> MuscleFill {
+        switch (oldFill, newFill) {
+        case (.color(let oldColor), .color(let newColor)):
+            return .color(oldColor.interpolate(to: newColor, fraction: progress))
+        default:
+            return progress < 0.5 ? oldFill : newFill
+        }
     }
 }
 

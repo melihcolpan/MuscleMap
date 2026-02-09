@@ -58,6 +58,9 @@ public struct BodyView: View {
     // Undo
     private var selectionHistory: SelectionHistory?
 
+    // Heatmap configuration
+    private var heatmapConfig: HeatmapConfiguration?
+
     // MARK: - Initializer
 
     /// Creates a body view.
@@ -283,14 +286,72 @@ extension BodyView {
     /// Applies heatmap data using a color scale.
     public func heatmap(_ data: [MuscleIntensity], colorScale: HeatmapColorScale = .workout) -> BodyView {
         var copy = self
+        let config = copy.heatmapConfig ?? .default
+        let effectiveScale = HeatmapColorScale(
+            colors: colorScale.colors,
+            interpolation: config.interpolation
+        )
         for entry in data {
-            let color = entry.color ?? colorScale.color(for: entry.intensity)
-            copy.highlights[entry.muscle] = MuscleHighlight(
-                muscle: entry.muscle,
-                color: color,
-                opacity: 1.0
-            )
+            if let threshold = config.threshold, entry.intensity < threshold {
+                continue
+            }
+            let highlight: MuscleHighlight
+            if let overrideColor = entry.color {
+                highlight = MuscleHighlight(muscle: entry.muscle, color: overrideColor, opacity: 1.0)
+            } else if config.isGradientFillEnabled {
+                let highColor = effectiveScale.color(for: entry.intensity)
+                let lowColor = effectiveScale.color(for: entry.intensity * config.gradientLowIntensityFactor)
+                highlight = MuscleHighlight(
+                    muscle: entry.muscle,
+                    fill: .linearGradient(
+                        colors: [lowColor, highColor],
+                        startPoint: config.gradientDirection.startPoint,
+                        endPoint: config.gradientDirection.endPoint
+                    ),
+                    opacity: 1.0
+                )
+            } else {
+                let color = effectiveScale.color(for: entry.intensity)
+                highlight = MuscleHighlight(muscle: entry.muscle, color: color, opacity: 1.0)
+            }
+            copy.highlights[entry.muscle] = highlight
         }
+        return copy
+    }
+
+    /// Applies heatmap data with a full configuration.
+    public func heatmap(_ data: [MuscleIntensity], configuration: HeatmapConfiguration) -> BodyView {
+        var copy = self
+        copy.heatmapConfig = configuration
+        return copy.heatmap(data, colorScale: configuration.colorScale)
+    }
+
+    /// Sets the heatmap interpolation curve.
+    public func heatmapInterpolation(_ interpolation: ColorInterpolation) -> BodyView {
+        var copy = self
+        var config = copy.heatmapConfig ?? .default
+        config.interpolation = interpolation
+        copy.heatmapConfig = config
+        return copy
+    }
+
+    /// Sets the minimum intensity threshold for heatmap display.
+    public func heatmapThreshold(_ threshold: Double) -> BodyView {
+        var copy = self
+        var config = copy.heatmapConfig ?? .default
+        config.threshold = threshold
+        copy.heatmapConfig = config
+        return copy
+    }
+
+    /// Enables intra-muscle gradient fill for heatmap.
+    public func heatmapGradient(direction: GradientDirection = .topToBottom, lowFactor: Double = 0.3) -> BodyView {
+        var copy = self
+        var config = copy.heatmapConfig ?? .default
+        config.isGradientFillEnabled = true
+        config.gradientDirection = direction
+        config.gradientLowIntensityFactor = lowFactor
+        copy.heatmapConfig = config
         return copy
     }
 
