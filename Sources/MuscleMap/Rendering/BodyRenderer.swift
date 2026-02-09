@@ -15,8 +15,44 @@ struct BodyRenderer {
     let side: BodySide
     let highlights: [Muscle: MuscleHighlight]
     let style: BodyViewStyle
-    let selectedMuscle: Muscle?
+    let selectedMuscles: Set<Muscle>
     var selectionPulseFactor: Double = 1.0
+
+    /// Primary initializer with multi-select support.
+    init(
+        gender: BodyGender,
+        side: BodySide,
+        highlights: [Muscle: MuscleHighlight],
+        style: BodyViewStyle,
+        selectedMuscles: Set<Muscle>,
+        selectionPulseFactor: Double = 1.0
+    ) {
+        self.gender = gender
+        self.side = side
+        self.highlights = highlights
+        self.style = style
+        self.selectedMuscles = selectedMuscles
+        self.selectionPulseFactor = selectionPulseFactor
+    }
+
+    /// Backward-compatible initializer accepting optional single muscle.
+    init(
+        gender: BodyGender,
+        side: BodySide,
+        highlights: [Muscle: MuscleHighlight],
+        style: BodyViewStyle,
+        selectedMuscle: Muscle?,
+        selectionPulseFactor: Double = 1.0
+    ) {
+        self.init(
+            gender: gender,
+            side: side,
+            highlights: highlights,
+            style: style,
+            selectedMuscles: selectedMuscle.map { Set([$0]) } ?? [],
+            selectionPulseFactor: selectionPulseFactor
+        )
+    }
 
     private let pathCache = PathCache()
 
@@ -35,7 +71,7 @@ struct BodyRenderer {
         for bodyPart in bodyParts {
             let muscle = bodyPart.slug.muscle
             let highlight = muscle.flatMap { highlights[$0] }
-            let isSelected = muscle != nil && selectedMuscle == muscle
+            let isSelected = muscle.map { selectedMuscles.contains($0) } ?? false
 
             let fill = resolveFill(
                 for: bodyPart.slug,
@@ -143,6 +179,36 @@ struct BodyRenderer {
         }
 
         return nil
+    }
+
+    /// Returns the bounding rect of a muscle's combined paths in the given view size.
+    func boundingRect(for muscle: Muscle, in size: CGSize) -> CGRect? {
+        let viewBox = BodyPathProvider.viewBox(gender: gender, side: side)
+        let scale = min(
+            size.width / viewBox.size.width,
+            size.height / viewBox.size.height
+        )
+        let offsetX = (size.width - viewBox.size.width * scale) / 2 - viewBox.origin.x * scale
+        let offsetY = (size.height - viewBox.size.height * scale) / 2 - viewBox.origin.y * scale
+
+        let bodyParts = BodyPathProvider.paths(gender: gender, side: side)
+        var combinedRect: CGRect?
+
+        for bodyPart in bodyParts {
+            guard bodyPart.slug.muscle == muscle else { continue }
+            for pathString in bodyPart.allPaths {
+                let path = pathCache.path(for: pathString, scale: scale, offsetX: offsetX, offsetY: offsetY)
+                let rect = path.boundingRect
+                guard !rect.isEmpty else { continue }
+                if let existing = combinedRect {
+                    combinedRect = existing.union(rect)
+                } else {
+                    combinedRect = rect
+                }
+            }
+        }
+
+        return combinedRect
     }
 
     // MARK: - Private

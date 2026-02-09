@@ -15,10 +15,14 @@ struct AnimatedBodyContainer: View {
     let side: BodySide
     let highlights: [Muscle: MuscleHighlight]
     let style: BodyViewStyle
-    let selectedMuscle: Muscle?
+    let selectedMuscles: Set<Muscle>
     let animationDuration: Double
     let selectionPulseFactor: Double
     let onMuscleSelected: ((Muscle, MuscleSide) -> Void)?
+    let onMuscleLongPressed: ((Muscle, MuscleSide) -> Void)?
+    let onMuscleDragged: ((Muscle, MuscleSide) -> Void)?
+    let onMuscleDragEnded: (() -> Void)?
+    let longPressDuration: Double
 
     @State private var currentHighlights: [Muscle: MuscleHighlight] = [:]
     @State private var previousHighlights: [Muscle: MuscleHighlight] = [:]
@@ -33,24 +37,26 @@ struct AnimatedBodyContainer: View {
                     side: side,
                     highlights: blended,
                     style: style,
-                    selectedMuscle: selectedMuscle,
+                    selectedMuscles: selectedMuscles,
                     selectionPulseFactor: selectionPulseFactor
                 )
                 renderer.render(context: &context, size: size)
             }
             .contentShape(Rectangle())
-            .onTapGesture { location in
-                guard onMuscleSelected != nil else { return }
-                let renderer = BodyRenderer(
+            .overlay {
+                InteractiveBodyOverlay(
                     gender: gender,
                     side: side,
                     highlights: highlights,
                     style: style,
-                    selectedMuscle: selectedMuscle
+                    selectedMuscles: selectedMuscles,
+                    size: geometry.size,
+                    onMuscleSelected: onMuscleSelected,
+                    onMuscleLongPressed: onMuscleLongPressed,
+                    onMuscleDragged: onMuscleDragged,
+                    onMuscleDragEnded: onMuscleDragEnded,
+                    longPressDuration: longPressDuration
                 )
-                if let (muscle, muscleSide) = renderer.hitTest(at: location, in: geometry.size) {
-                    onMuscleSelected?(muscle, muscleSide)
-                }
             }
         }
         .onChange(of: highlights) { oldValue, newValue in
@@ -109,13 +115,120 @@ struct AnimatedBodyContainer: View {
     }
 }
 
+/// A dedicated view for pulse animation on selected muscles, avoiding TimelineView generic inference issues.
+struct PulseBodyView: View {
+    let gender: BodyGender
+    let side: BodySide
+    let highlights: [Muscle: MuscleHighlight]
+    let style: BodyViewStyle
+    let selectedMuscles: Set<Muscle>
+    let pulseSpeed: Double
+    let pulseRange: ClosedRange<Double>
+    let onMuscleSelected: ((Muscle, MuscleSide) -> Void)?
+    let onMuscleLongPressed: ((Muscle, MuscleSide) -> Void)?
+    let onMuscleDragged: ((Muscle, MuscleSide) -> Void)?
+    let onMuscleDragEnded: (() -> Void)?
+    let longPressDuration: Double
+    let tooltipContent: ((Muscle, MuscleSide) -> AnyView)?
+
+    var body: some View {
+        TimelineView(.animation) { timeline in
+            PulseBodyCanvas(
+                gender: gender,
+                side: side,
+                highlights: highlights,
+                style: style,
+                selectedMuscles: selectedMuscles,
+                date: timeline.date,
+                pulseSpeed: pulseSpeed,
+                pulseRange: pulseRange,
+                onMuscleSelected: onMuscleSelected,
+                onMuscleLongPressed: onMuscleLongPressed,
+                onMuscleDragged: onMuscleDragged,
+                onMuscleDragEnded: onMuscleDragEnded,
+                longPressDuration: longPressDuration,
+                tooltipContent: tooltipContent
+            )
+        }
+    }
+}
+
+/// Inner view that renders the pulsing canvas at a specific timestamp.
+private struct PulseBodyCanvas: View {
+    let gender: BodyGender
+    let side: BodySide
+    let highlights: [Muscle: MuscleHighlight]
+    let style: BodyViewStyle
+    let selectedMuscles: Set<Muscle>
+    let date: Date
+    let pulseSpeed: Double
+    let pulseRange: ClosedRange<Double>
+    let onMuscleSelected: ((Muscle, MuscleSide) -> Void)?
+    let onMuscleLongPressed: ((Muscle, MuscleSide) -> Void)?
+    let onMuscleDragged: ((Muscle, MuscleSide) -> Void)?
+    let onMuscleDragEnded: (() -> Void)?
+    let longPressDuration: Double
+    let tooltipContent: ((Muscle, MuscleSide) -> AnyView)?
+
+    private var pulseFactor: Double {
+        let elapsed = date.timeIntervalSinceReferenceDate
+        let phase = (sin(elapsed * pulseSpeed * .pi * 2) + 1.0) / 2.0
+        return pulseRange.lowerBound + phase * (pulseRange.upperBound - pulseRange.lowerBound)
+    }
+
+    var body: some View {
+        GeometryReader { geometry in
+            Canvas { context, size in
+                let renderer = BodyRenderer(
+                    gender: gender,
+                    side: side,
+                    highlights: highlights,
+                    style: style,
+                    selectedMuscles: selectedMuscles,
+                    selectionPulseFactor: pulseFactor
+                )
+                renderer.render(context: &context, size: size)
+            }
+            .contentShape(Rectangle())
+            .overlay {
+                InteractiveBodyOverlay(
+                    gender: gender,
+                    side: side,
+                    highlights: highlights,
+                    style: style,
+                    selectedMuscles: selectedMuscles,
+                    size: geometry.size,
+                    onMuscleSelected: onMuscleSelected,
+                    onMuscleLongPressed: onMuscleLongPressed,
+                    onMuscleDragged: onMuscleDragged,
+                    onMuscleDragEnded: onMuscleDragEnded,
+                    longPressDuration: longPressDuration
+                )
+            }
+            .overlay {
+                if let tooltipContent, !selectedMuscles.isEmpty {
+                    MuscleTooltipOverlay(
+                        gender: gender,
+                        side: side,
+                        highlights: highlights,
+                        style: style,
+                        selectedMuscles: selectedMuscles,
+                        size: geometry.size,
+                        content: tooltipContent
+                    )
+                }
+            }
+        }
+    }
+}
+
 /// An animatable wrapper that drives smooth Canvas redraws for opacity transitions.
 struct AnimatedBodyCanvas: View, Animatable {
     let gender: BodyGender
     let side: BodySide
     let highlights: [Muscle: MuscleHighlight]
     let style: BodyViewStyle
-    let selectedMuscle: Muscle?
+    let selectedMuscles: Set<Muscle>
     var animationProgress: Double
     let selectionPulseFactor: Double
 
@@ -131,7 +244,7 @@ struct AnimatedBodyCanvas: View, Animatable {
                 side: side,
                 highlights: highlights,
                 style: style,
-                selectedMuscle: selectedMuscle,
+                selectedMuscles: selectedMuscles,
                 selectionPulseFactor: selectionPulseFactor
             )
             renderer.render(context: &context, size: size)

@@ -1,6 +1,6 @@
 # MuscleMap
 
-A native SwiftUI SDK for rendering interactive human body muscle maps with highlighting, heatmaps, and tap-to-select functionality.
+A native SwiftUI SDK for rendering interactive human body muscle maps with highlighting, heatmaps, multi-select, zoom, and gesture-rich interaction.
 
 Supports **male & female** body models with **front & back** views.
 
@@ -17,6 +17,12 @@ Supports **male & female** body models with **front & back** views.
 - 22 muscle groups with left/right side detection
 - Heatmap visualization with customizable color scales
 - Tap-to-select with hit testing
+- **Multi-select** (select multiple muscles at once)
+- **Long press gesture** (with configurable duration)
+- **Drag-to-select** (paint muscles by dragging)
+- **Pinch-to-zoom & pan** (with double-tap to reset)
+- **Tooltips** (custom content positioned above selected muscles)
+- **Undo/redo** (selection history tracking)
 - 4 preset styles (default, minimal, neon, medical)
 - **Gradient fills** (linear & radial gradients)
 - **Transition animations** (fade in/out on highlight changes)
@@ -33,7 +39,7 @@ Add to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/melihcolpan/MuscleMap.git", from: "1.1.0")
+    .package(url: "https://github.com/melihcolpan/MuscleMap.git", from: "1.2.0")
 ]
 ```
 
@@ -203,6 +209,7 @@ BodyView(gender: .male, side: .front)
 ### Selection State
 
 ```swift
+// Single selection (backward compatible)
 @State private var selected: Muscle?
 
 BodyView(gender: .male, side: .front)
@@ -210,6 +217,76 @@ BodyView(gender: .male, side: .front)
     .onMuscleSelected { muscle, _ in
         selected = muscle
     }
+```
+
+### Multi-Select
+
+```swift
+@State private var selectedMuscles: Set<Muscle> = []
+
+BodyView(gender: .male, side: .front)
+    .selected(selectedMuscles)
+    .onMuscleSelected { muscle, _ in
+        if selectedMuscles.contains(muscle) {
+            selectedMuscles.remove(muscle)
+        } else {
+            selectedMuscles.insert(muscle)
+        }
+    }
+```
+
+### Long Press
+
+```swift
+BodyView(gender: .male, side: .front)
+    .onMuscleLongPressed(duration: 0.5) { muscle, side in
+        print("Long pressed: \(muscle.displayName)")
+    }
+```
+
+### Drag-to-Select
+
+```swift
+BodyView(gender: .male, side: .front)
+    .onMuscleDragged({ muscle, side in
+        selectedMuscles.insert(muscle)
+    }, onEnded: {
+        print("Drag ended")
+    })
+```
+
+### Pinch-to-Zoom
+
+```swift
+BodyView(gender: .male, side: .front)
+    .zoomable(minScale: 1.0, maxScale: 4.0)
+```
+
+### Tooltips
+
+```swift
+BodyView(gender: .male, side: .front)
+    .selected(selectedMuscles)
+    .tooltip { muscle, side in
+        Text(muscle.displayName)
+            .font(.caption)
+            .padding(4)
+            .background(.ultraThinMaterial)
+    }
+```
+
+### Undo/Redo
+
+```swift
+@State private var history = SelectionHistory()
+
+BodyView(gender: .male, side: .front)
+    .undoable(history)
+
+Button("Undo") { if let state = history.undo() { selectedMuscles = state } }
+    .disabled(!history.canUndo)
+Button("Redo") { if let state = history.redo() { selectedMuscles = state } }
+    .disabled(!history.canRedo)
 ```
 
 ### Gender & Side

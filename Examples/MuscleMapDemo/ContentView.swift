@@ -29,6 +29,10 @@ struct ContentView: View {
             AnimationDemo()
                 .tabItem { Label("Animation", systemImage: "wand.and.stars") }
                 .tag(5)
+
+            InteractiveV2Demo()
+                .tabItem { Label("Interactive V2", systemImage: "hand.draw") }
+                .tag(6)
         }
     }
 }
@@ -362,6 +366,107 @@ struct AnimationDemo: View {
                 .highlight(.calves, color: .cyan)
                 .highlight(.hamstring, color: .purple)
                 .animated(duration: 0.5)
+        }
+    }
+}
+
+// MARK: - Interactive V2 Demo
+
+struct InteractiveV2Demo: View {
+    @State private var selectedMuscles: Set<Muscle> = []
+    @State private var lastSide: MuscleSide = .both
+    @State private var longPressedMuscle: String = ""
+    @State private var history = SelectionHistory()
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 12) {
+                // Status bar
+                HStack {
+                    if selectedMuscles.isEmpty {
+                        Text("Tap to select, long press for info, drag to paint")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    } else {
+                        Text(selectedMuscles.map(\.displayName).sorted().joined(separator: ", "))
+                            .font(.caption.bold())
+                            .lineLimit(2)
+                    }
+                    Spacer()
+                    Button("Undo") {
+                        if let state = history.undo() {
+                            selectedMuscles = state
+                        }
+                    }
+                    .disabled(!history.canUndo)
+
+                    Button("Redo") {
+                        if let state = history.redo() {
+                            selectedMuscles = state
+                        }
+                    }
+                    .disabled(!history.canRedo)
+                }
+                .padding(.horizontal)
+
+                if !longPressedMuscle.isEmpty {
+                    Text(longPressedMuscle)
+                        .font(.footnote)
+                        .padding(6)
+                        .background(.blue.opacity(0.15), in: RoundedRectangle(cornerRadius: 6))
+                        .transition(.opacity)
+                }
+
+                // Body view with all interactive features
+                BodyView(gender: .male, side: .front)
+                    .highlight(Array(selectedMuscles), color: .orange)
+                    .selected(selectedMuscles)
+                    .pulseSelected(speed: 1.5, range: 0.7...1.0)
+                    .onMuscleSelected { muscle, side in
+                        var newSelection = selectedMuscles
+                        if newSelection.contains(muscle) {
+                            newSelection.remove(muscle)
+                        } else {
+                            newSelection.insert(muscle)
+                        }
+                        selectedMuscles = newSelection
+                        lastSide = side
+                        history.push(newSelection)
+                    }
+                    .onMuscleLongPressed(duration: 0.5) { muscle, side in
+                        withAnimation {
+                            longPressedMuscle = "Long pressed: \(muscle.displayName) (\(side.rawValue))"
+                        }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            withAnimation { longPressedMuscle = "" }
+                        }
+                    }
+                    .onMuscleDragged({ muscle, side in
+                        if !selectedMuscles.contains(muscle) {
+                            selectedMuscles.insert(muscle)
+                            history.push(selectedMuscles)
+                        }
+                    }, onEnded: {})
+                    .zoomable(minScale: 1.0, maxScale: 3.0)
+                    .tooltip { muscle, _ in
+                        Text(muscle.displayName)
+                            .font(.caption2.bold())
+                            .padding(4)
+                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 4))
+                    }
+                    .undoable(history)
+                    .frame(maxHeight: .infinity)
+                    .padding(.horizontal)
+
+                Button("Clear Selection") {
+                    selectedMuscles.removeAll()
+                    history.push(selectedMuscles)
+                }
+                .buttonStyle(.bordered)
+                .disabled(selectedMuscles.isEmpty)
+            }
+            .padding(.vertical)
+            .navigationTitle("Interactive V2")
         }
     }
 }

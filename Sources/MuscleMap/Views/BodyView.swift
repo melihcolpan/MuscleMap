@@ -29,7 +29,7 @@ public struct BodyView: View {
     private let side: BodySide
     private var style: BodyViewStyle
     private var highlights: [Muscle: MuscleHighlight]
-    private var selectedMuscle: Muscle?
+    private var selectedMuscles: Set<Muscle> = []
     private var onMuscleSelected: ((Muscle, MuscleSide) -> Void)?
 
     // Animation
@@ -40,6 +40,23 @@ public struct BodyView: View {
     private var isPulseEnabled: Bool = false
     private var pulseSpeed: Double = 1.5
     private var pulseRange: ClosedRange<Double> = 0.6...1.0
+
+    // Gestures
+    private var onMuscleLongPressed: ((Muscle, MuscleSide) -> Void)?
+    private var onMuscleDragged: ((Muscle, MuscleSide) -> Void)?
+    private var onMuscleDragEnded: (() -> Void)?
+    private var longPressDuration: Double = 0.5
+
+    // Zoom
+    private var isZoomEnabled: Bool = false
+    private var minZoomScale: CGFloat = 1.0
+    private var maxZoomScale: CGFloat = 4.0
+
+    // Tooltip
+    private var tooltipContent: ((Muscle, MuscleSide) -> AnyView)?
+
+    // Undo
+    private var selectionHistory: SelectionHistory?
 
     // MARK: - Initializer
 
@@ -62,7 +79,9 @@ public struct BodyView: View {
     // MARK: - Body
 
     public var body: some View {
-        if isPulseEnabled && selectedMuscle != nil {
+        if isZoomEnabled {
+            zoomableBody
+        } else if isPulseEnabled && !selectedMuscles.isEmpty {
             pulseBody
         } else if isAnimated {
             animatedBody
@@ -77,18 +96,14 @@ public struct BodyView: View {
     private var standardBody: some View {
         GeometryReader { geometry in
             Canvas { context, size in
-                let renderer = BodyRenderer(
-                    gender: gender,
-                    side: side,
-                    highlights: highlights,
-                    style: style,
-                    selectedMuscle: selectedMuscle
-                )
-                renderer.render(context: &context, size: size)
+                makeRenderer(size: size).render(context: &context, size: size)
             }
             .contentShape(Rectangle())
-            .onTapGesture { location in
-                handleTap(at: location, in: geometry.size)
+            .overlay {
+                makeInteractiveOverlay(size: geometry.size)
+            }
+            .overlay {
+                makeTooltipOverlay(size: geometry.size)
             }
         }
     }
@@ -100,53 +115,112 @@ public struct BodyView: View {
             side: side,
             highlights: highlights,
             style: style,
-            selectedMuscle: selectedMuscle,
+            selectedMuscles: selectedMuscles,
             animationDuration: animationDuration,
             selectionPulseFactor: 1.0,
-            onMuscleSelected: onMuscleSelected
+            onMuscleSelected: wrappedOnMuscleSelected,
+            onMuscleLongPressed: onMuscleLongPressed,
+            onMuscleDragged: onMuscleDragged,
+            onMuscleDragEnded: onMuscleDragEnded,
+            longPressDuration: longPressDuration
         )
     }
 
     @ViewBuilder
     private var pulseBody: some View {
-        TimelineView(.animation) { timeline in
-            GeometryReader { geometry in
-                let elapsed = timeline.date.timeIntervalSinceReferenceDate
-                let phase = (sin(elapsed * pulseSpeed * .pi * 2) + 1.0) / 2.0
-                let pulseFactor = pulseRange.lowerBound + phase * (pulseRange.upperBound - pulseRange.lowerBound)
-
-                Canvas { context, size in
-                    let renderer = BodyRenderer(
-                        gender: gender,
-                        side: side,
-                        highlights: highlights,
-                        style: style,
-                        selectedMuscle: selectedMuscle,
-                        selectionPulseFactor: pulseFactor
-                    )
-                    renderer.render(context: &context, size: size)
-                }
-                .contentShape(Rectangle())
-                .onTapGesture { location in
-                    handleTap(at: location, in: geometry.size)
-                }
-            }
-        }
-    }
-
-    // MARK: - Private
-
-    private func handleTap(at location: CGPoint, in size: CGSize) {
-        guard onMuscleSelected != nil else { return }
-        let renderer = BodyRenderer(
+        PulseBodyView(
             gender: gender,
             side: side,
             highlights: highlights,
             style: style,
-            selectedMuscle: selectedMuscle
+            selectedMuscles: selectedMuscles,
+            pulseSpeed: pulseSpeed,
+            pulseRange: pulseRange,
+            onMuscleSelected: wrappedOnMuscleSelected,
+            onMuscleLongPressed: onMuscleLongPressed,
+            onMuscleDragged: onMuscleDragged,
+            onMuscleDragEnded: onMuscleDragEnded,
+            longPressDuration: longPressDuration,
+            tooltipContent: tooltipContent
         )
-        if let (muscle, muscleSide) = renderer.hitTest(at: location, in: size) {
-            onMuscleSelected?(muscle, muscleSide)
+    }
+
+    @ViewBuilder
+    private var zoomableBody: some View {
+        ZoomableBodyContainer(
+            minScale: minZoomScale,
+            maxScale: maxZoomScale
+        ) { _, _ in
+            if isPulseEnabled && !selectedMuscles.isEmpty {
+                PulseBodyView(
+                    gender: gender,
+                    side: side,
+                    highlights: highlights,
+                    style: style,
+                    selectedMuscles: selectedMuscles,
+                    pulseSpeed: pulseSpeed,
+                    pulseRange: pulseRange,
+                    onMuscleSelected: wrappedOnMuscleSelected,
+                    onMuscleLongPressed: onMuscleLongPressed,
+                    onMuscleDragged: onMuscleDragged,
+                    onMuscleDragEnded: onMuscleDragEnded,
+                    longPressDuration: longPressDuration,
+                    tooltipContent: tooltipContent
+                )
+            } else {
+                standardBody
+            }
+        }
+    }
+
+    // MARK: - Helpers
+
+    private func makeRenderer(size: CGSize) -> BodyRenderer {
+        BodyRenderer(
+            gender: gender,
+            side: side,
+            highlights: highlights,
+            style: style,
+            selectedMuscles: selectedMuscles
+        )
+    }
+
+    private func makeInteractiveOverlay(size: CGSize) -> InteractiveBodyOverlay {
+        InteractiveBodyOverlay(
+            gender: gender,
+            side: side,
+            highlights: highlights,
+            style: style,
+            selectedMuscles: selectedMuscles,
+            size: size,
+            onMuscleSelected: wrappedOnMuscleSelected,
+            onMuscleLongPressed: onMuscleLongPressed,
+            onMuscleDragged: onMuscleDragged,
+            onMuscleDragEnded: onMuscleDragEnded,
+            longPressDuration: longPressDuration
+        )
+    }
+
+    @ViewBuilder
+    private func makeTooltipOverlay(size: CGSize) -> some View {
+        if let tooltipContent, !selectedMuscles.isEmpty {
+            MuscleTooltipOverlay(
+                gender: gender,
+                side: side,
+                highlights: highlights,
+                style: style,
+                selectedMuscles: selectedMuscles,
+                size: size,
+                content: tooltipContent
+            )
+        }
+    }
+
+    /// Wraps `onMuscleSelected` to also push to history if `.undoable()` is enabled.
+    private var wrappedOnMuscleSelected: ((Muscle, MuscleSide) -> Void)? {
+        guard onMuscleSelected != nil || selectionHistory != nil else { return nil }
+        return { muscle, side in
+            onMuscleSelected?(muscle, side)
         }
     }
 }
@@ -231,10 +305,17 @@ extension BodyView {
         return copy
     }
 
-    /// Sets the selected muscle (displayed with selection style).
+    /// Sets the selected muscle (backward compatible, single muscle).
     public func selected(_ muscle: Muscle?) -> BodyView {
         var copy = self
-        copy.selectedMuscle = muscle
+        copy.selectedMuscles = muscle.map { Set([$0]) } ?? []
+        return copy
+    }
+
+    /// Sets multiple selected muscles (multi-select).
+    public func selected(_ muscles: Set<Muscle>) -> BodyView {
+        var copy = self
+        copy.selectedMuscles = muscles
         return copy
     }
 
@@ -242,6 +323,45 @@ extension BodyView {
     public func onMuscleSelected(_ action: @escaping (Muscle, MuscleSide) -> Void) -> BodyView {
         var copy = self
         copy.onMuscleSelected = action
+        return copy
+    }
+
+    /// Sets a callback for when a muscle is long pressed.
+    public func onMuscleLongPressed(duration: Double = 0.5, action: @escaping (Muscle, MuscleSide) -> Void) -> BodyView {
+        var copy = self
+        copy.longPressDuration = duration
+        copy.onMuscleLongPressed = action
+        return copy
+    }
+
+    /// Sets a callback for drag-to-select gesture.
+    public func onMuscleDragged(_ action: @escaping (Muscle, MuscleSide) -> Void, onEnded: @escaping () -> Void = {}) -> BodyView {
+        var copy = self
+        copy.onMuscleDragged = action
+        copy.onMuscleDragEnded = onEnded
+        return copy
+    }
+
+    /// Enables pinch-to-zoom and pan.
+    public func zoomable(minScale: CGFloat = 1.0, maxScale: CGFloat = 4.0) -> BodyView {
+        var copy = self
+        copy.isZoomEnabled = true
+        copy.minZoomScale = minScale
+        copy.maxZoomScale = maxScale
+        return copy
+    }
+
+    /// Adds a tooltip overlay that appears above selected muscles.
+    public func tooltip<Content: View>(@ViewBuilder content: @escaping (Muscle, MuscleSide) -> Content) -> BodyView {
+        var copy = self
+        copy.tooltipContent = { muscle, side in AnyView(content(muscle, side)) }
+        return copy
+    }
+
+    /// Enables undo/redo tracking with the provided history object.
+    public func undoable(_ history: SelectionHistory) -> BodyView {
+        var copy = self
+        copy.selectionHistory = history
         return copy
     }
 
