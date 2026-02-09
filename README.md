@@ -176,6 +176,11 @@ BodyView(gender: .male, side: .front)
 
 ### Gradient Heatmap Fill
 
+<p align="center">
+  <img src="Screenshots/heatmap_v2_gradient.png" width="220" alt="Gradient Heatmap">
+  <img src="Screenshots/heatmap_v2_stepped.png" width="220" alt="Stepped Heatmap">
+</p>
+
 Apply intra-muscle gradients based on intensity (low-to-high color within each muscle):
 
 ```swift
