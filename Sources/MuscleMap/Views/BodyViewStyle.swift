@@ -19,6 +19,9 @@ public struct BodyViewStyle: Sendable {
     public var selectionStrokeWidth: CGFloat
     public var headColor: Color
     public var hairColor: Color
+    public var shadowColor: Color
+    public var shadowRadius: CGFloat
+    public var shadowOffset: CGSize
 
     public init(
         defaultFillColor: Color = .mmDefaultFill,
@@ -28,7 +31,10 @@ public struct BodyViewStyle: Sendable {
         selectionStrokeColor: Color = .green,
         selectionStrokeWidth: CGFloat = 2,
         headColor: Color = Color(white: 0.75),
-        hairColor: Color = Color(white: 0.25)
+        hairColor: Color = Color(white: 0.25),
+        shadowColor: Color = .clear,
+        shadowRadius: CGFloat = 0,
+        shadowOffset: CGSize = .zero
     ) {
         self.defaultFillColor = defaultFillColor
         self.strokeColor = strokeColor
@@ -38,6 +44,9 @@ public struct BodyViewStyle: Sendable {
         self.selectionStrokeWidth = selectionStrokeWidth
         self.headColor = headColor
         self.hairColor = hairColor
+        self.shadowColor = shadowColor
+        self.shadowRadius = shadowRadius
+        self.shadowOffset = shadowOffset
     }
 }
 
@@ -56,7 +65,7 @@ extension BodyViewStyle {
         selectionStrokeWidth: 1.5
     )
 
-    /// Neon style with dark background tones.
+    /// Neon style with dark background tones and glow shadow.
     public static let neon = BodyViewStyle(
         defaultFillColor: Color(white: 0.15),
         strokeColor: Color(white: 0.3),
@@ -65,7 +74,9 @@ extension BodyViewStyle {
         selectionStrokeColor: .cyan,
         selectionStrokeWidth: 2,
         headColor: Color(white: 0.2),
-        hairColor: Color(white: 0.1)
+        hairColor: Color(white: 0.1),
+        shadowColor: .cyan.opacity(0.6),
+        shadowRadius: 8
     )
 
     /// Medical/clinical style.

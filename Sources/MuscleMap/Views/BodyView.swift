@@ -32,6 +32,15 @@ public struct BodyView: View {
     private var selectedMuscle: Muscle?
     private var onMuscleSelected: ((Muscle, MuscleSide) -> Void)?
 
+    // Animation
+    private var isAnimated: Bool = false
+    private var animationDuration: Double = 0.3
+
+    // Pulse
+    private var isPulseEnabled: Bool = false
+    private var pulseSpeed: Double = 1.5
+    private var pulseRange: ClosedRange<Double> = 0.6...1.0
+
     // MARK: - Initializer
 
     /// Creates a body view.
@@ -53,6 +62,19 @@ public struct BodyView: View {
     // MARK: - Body
 
     public var body: some View {
+        if isPulseEnabled && selectedMuscle != nil {
+            pulseBody
+        } else if isAnimated {
+            animatedBody
+        } else {
+            standardBody
+        }
+    }
+
+    // MARK: - Body Variants
+
+    @ViewBuilder
+    private var standardBody: some View {
         GeometryReader { geometry in
             Canvas { context, size in
                 let renderer = BodyRenderer(
@@ -66,18 +88,65 @@ public struct BodyView: View {
             }
             .contentShape(Rectangle())
             .onTapGesture { location in
-                guard onMuscleSelected != nil else { return }
-                let renderer = BodyRenderer(
-                    gender: gender,
-                    side: side,
-                    highlights: highlights,
-                    style: style,
-                    selectedMuscle: selectedMuscle
-                )
-                if let (muscle, muscleSide) = renderer.hitTest(at: location, in: geometry.size) {
-                    onMuscleSelected?(muscle, muscleSide)
+                handleTap(at: location, in: geometry.size)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var animatedBody: some View {
+        AnimatedBodyContainer(
+            gender: gender,
+            side: side,
+            highlights: highlights,
+            style: style,
+            selectedMuscle: selectedMuscle,
+            animationDuration: animationDuration,
+            selectionPulseFactor: 1.0,
+            onMuscleSelected: onMuscleSelected
+        )
+    }
+
+    @ViewBuilder
+    private var pulseBody: some View {
+        TimelineView(.animation) { timeline in
+            GeometryReader { geometry in
+                let elapsed = timeline.date.timeIntervalSinceReferenceDate
+                let phase = (sin(elapsed * pulseSpeed * .pi * 2) + 1.0) / 2.0
+                let pulseFactor = pulseRange.lowerBound + phase * (pulseRange.upperBound - pulseRange.lowerBound)
+
+                Canvas { context, size in
+                    let renderer = BodyRenderer(
+                        gender: gender,
+                        side: side,
+                        highlights: highlights,
+                        style: style,
+                        selectedMuscle: selectedMuscle,
+                        selectionPulseFactor: pulseFactor
+                    )
+                    renderer.render(context: &context, size: size)
+                }
+                .contentShape(Rectangle())
+                .onTapGesture { location in
+                    handleTap(at: location, in: geometry.size)
                 }
             }
+        }
+    }
+
+    // MARK: - Private
+
+    private func handleTap(at location: CGPoint, in size: CGSize) {
+        guard onMuscleSelected != nil else { return }
+        let renderer = BodyRenderer(
+            gender: gender,
+            side: side,
+            highlights: highlights,
+            style: style,
+            selectedMuscle: selectedMuscle
+        )
+        if let (muscle, muscleSide) = renderer.hitTest(at: location, in: size) {
+            onMuscleSelected?(muscle, muscleSide)
         }
     }
 }
@@ -99,6 +168,41 @@ extension BodyView {
         for muscle in muscles {
             copy.highlights[muscle] = MuscleHighlight(muscle: muscle, color: color, opacity: opacity)
         }
+        return copy
+    }
+
+    /// Highlights a muscle with a linear gradient.
+    public func highlight(
+        _ muscle: Muscle,
+        linearGradient colors: [Color],
+        startPoint: UnitPoint = .top,
+        endPoint: UnitPoint = .bottom,
+        opacity: Double = 1.0
+    ) -> BodyView {
+        var copy = self
+        copy.highlights[muscle] = MuscleHighlight(
+            muscle: muscle,
+            fill: .linearGradient(colors: colors, startPoint: startPoint, endPoint: endPoint),
+            opacity: opacity
+        )
+        return copy
+    }
+
+    /// Highlights a muscle with a radial gradient.
+    public func highlight(
+        _ muscle: Muscle,
+        radialGradient colors: [Color],
+        center: UnitPoint = .center,
+        startRadius: CGFloat = 0,
+        endRadius: CGFloat = 40,
+        opacity: Double = 1.0
+    ) -> BodyView {
+        var copy = self
+        copy.highlights[muscle] = MuscleHighlight(
+            muscle: muscle,
+            fill: .radialGradient(colors: colors, center: center, startRadius: startRadius, endRadius: endRadius),
+            opacity: opacity
+        )
         return copy
     }
 
@@ -147,6 +251,23 @@ extension BodyView {
         copy.style = style
         return copy
     }
+
+    /// Enables smooth fade-in/fade-out animation when highlights change.
+    public func animated(duration: Double = 0.3) -> BodyView {
+        var copy = self
+        copy.isAnimated = true
+        copy.animationDuration = duration
+        return copy
+    }
+
+    /// Enables pulse animation on the selected muscle.
+    public func pulseSelected(speed: Double = 1.5, range: ClosedRange<Double> = 0.6...1.0) -> BodyView {
+        var copy = self
+        copy.isPulseEnabled = true
+        copy.pulseSpeed = speed
+        copy.pulseRange = range
+        return copy
+    }
 }
 
 // MARK: - Preview
@@ -188,6 +309,15 @@ extension BodyView {
             .quadriceps: 4,
             .deltoids: 2
         ])
+        .frame(width: 200, height: 400)
+        .padding()
+}
+
+#Preview("Gradient") {
+    BodyView(gender: .male, side: .front)
+        .highlight(.chest, linearGradient: [.red, .orange], startPoint: .top, endPoint: .bottom)
+        .highlight(.biceps, radialGradient: [.white, .blue], center: .center, endRadius: 40)
+        .highlight(.quadriceps, color: .red)
         .frame(width: 200, height: 400)
         .padding()
 }

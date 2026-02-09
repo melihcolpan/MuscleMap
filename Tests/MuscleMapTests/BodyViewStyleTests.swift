@@ -20,6 +20,7 @@ final class BodyViewStyleTests: XCTestCase {
         let style = BodyViewStyle.neon
         XCTAssertEqual(style.strokeWidth, 0.5)
         XCTAssertEqual(style.selectionStrokeWidth, 2)
+        XCTAssertEqual(style.shadowRadius, 8)
     }
 
     func testMedicalStyle() {
@@ -41,5 +42,40 @@ final class BodyViewStyleTests: XCTestCase {
         )
         XCTAssertEqual(style.strokeWidth, 3)
         XCTAssertEqual(style.selectionStrokeWidth, 4)
+    }
+
+    // MARK: - Shadow Properties
+
+    func testDefaultStyleShadow() {
+        let style = BodyViewStyle.default
+        XCTAssertEqual(style.shadowRadius, 0)
+        XCTAssertEqual(style.shadowOffset, .zero)
+    }
+
+    func testMinimalStyleShadow() {
+        let style = BodyViewStyle.minimal
+        XCTAssertEqual(style.shadowRadius, 0)
+    }
+
+    func testNeonStyleShadow() {
+        let style = BodyViewStyle.neon
+        XCTAssertEqual(style.shadowRadius, 8)
+        // shadowColor is cyan with opacity - just check radius is set
+        XCTAssertGreaterThan(style.shadowRadius, 0)
+    }
+
+    func testMedicalStyleShadow() {
+        let style = BodyViewStyle.medical
+        XCTAssertEqual(style.shadowRadius, 0)
+    }
+
+    func testCustomShadowStyle() {
+        let style = BodyViewStyle(
+            shadowColor: .purple,
+            shadowRadius: 12,
+            shadowOffset: CGSize(width: 2, height: 4)
+        )
+        XCTAssertEqual(style.shadowRadius, 12)
+        XCTAssertEqual(style.shadowOffset, CGSize(width: 2, height: 4))
     }
 }

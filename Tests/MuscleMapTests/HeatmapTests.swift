@@ -45,6 +45,31 @@ final class HeatmapTests: XCTestCase {
         XCTAssertEqual(highlight.opacity, 0.5)
     }
 
+    func testMuscleHighlightDefaultFillIsColor() {
+        let highlight = MuscleHighlight(muscle: .chest, color: .red)
+        XCTAssertEqual(highlight.fill, .color(.red))
+    }
+
+    func testMuscleHighlightGradientFill() {
+        let fill = MuscleFill.linearGradient(colors: [.red, .blue], startPoint: .top, endPoint: .bottom)
+        let highlight = MuscleHighlight(muscle: .chest, fill: fill, opacity: 0.7)
+        XCTAssertEqual(highlight.fill, fill)
+        XCTAssertEqual(highlight.opacity, 0.7)
+        XCTAssertEqual(highlight.color, .red) // fallback to first color
+    }
+
+    func testMuscleHighlightEquatable() {
+        let a = MuscleHighlight(muscle: .chest, color: .red, opacity: 0.5)
+        let b = MuscleHighlight(muscle: .chest, color: .red, opacity: 0.5)
+        XCTAssertEqual(a, b)
+    }
+
+    func testMuscleHighlightNotEqual() {
+        let a = MuscleHighlight(muscle: .chest, color: .red)
+        let b = MuscleHighlight(muscle: .biceps, color: .red)
+        XCTAssertNotEqual(a, b)
+    }
+
     // MARK: - HeatmapColorScale
 
     func testColorScaleEmptyColors() {

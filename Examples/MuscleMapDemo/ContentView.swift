@@ -21,6 +21,14 @@ struct ContentView: View {
             StyleDemo()
                 .tabItem { Label("Styles", systemImage: "paintbrush") }
                 .tag(3)
+
+            GradientDemo()
+                .tabItem { Label("Gradient", systemImage: "paintpalette") }
+                .tag(4)
+
+            AnimationDemo()
+                .tabItem { Label("Animation", systemImage: "wand.and.stars") }
+                .tag(5)
         }
     }
 }
@@ -184,6 +192,7 @@ struct InteractiveDemo: View {
 
                 BodyView(gender: gender, side: bodySide)
                     .selected(selectedMuscle)
+                    .pulseSelected()
                     .onMuscleSelected { muscle, side in
                         selectedMuscle = muscle
                         selectedSide = side
@@ -229,6 +238,130 @@ struct StyleDemo: View {
                 .frame(height: 300)
                 .padding()
                 .background(background, in: RoundedRectangle(cornerRadius: 12))
+        }
+    }
+}
+
+// MARK: - Gradient Demo
+
+struct GradientDemo: View {
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 24) {
+                    Text("Linear Gradient")
+                        .font(.headline)
+
+                    BodyView(gender: .male, side: .front)
+                        .highlight(.chest, linearGradient: [.red, .orange], startPoint: .top, endPoint: .bottom)
+                        .highlight(.biceps, linearGradient: [.blue, .cyan], startPoint: .leading, endPoint: .trailing)
+                        .highlight(.abs, linearGradient: [.yellow, .orange, .red], startPoint: .top, endPoint: .bottom)
+                        .highlight(.quadriceps, linearGradient: [.purple, .pink])
+                        .frame(height: 400)
+                        .padding(.horizontal)
+
+                    Text("Radial Gradient")
+                        .font(.headline)
+
+                    BodyView(gender: .male, side: .front)
+                        .highlight(.chest, radialGradient: [.white, .red], center: .center, endRadius: 40)
+                        .highlight(.biceps, radialGradient: [.white, .blue], center: .center, endRadius: 30)
+                        .highlight(.deltoids, radialGradient: [.yellow, .orange], center: .center, endRadius: 25)
+                        .frame(height: 400)
+                        .padding(.horizontal)
+
+                    Text("Mixed Fills")
+                        .font(.headline)
+
+                    BodyView(gender: .female, side: .front)
+                        .highlight(.chest, linearGradient: [.pink, .red])
+                        .highlight(.abs, color: .orange, opacity: 0.7)
+                        .highlight(.quadriceps, radialGradient: [.white, .purple], center: .center, endRadius: 50)
+                        .frame(height: 400)
+                        .padding(.horizontal)
+                }
+                .padding(.vertical)
+            }
+            .navigationTitle("Gradient")
+        }
+    }
+}
+
+// MARK: - Animation Demo
+
+struct AnimationDemo: View {
+    @State private var showUpperBody = true
+    @State private var selectedMuscle: Muscle?
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 24) {
+                    Text("Animated Transitions")
+                        .font(.headline)
+
+                    Button(showUpperBody ? "Show Lower Body" : "Show Upper Body") {
+                        showUpperBody.toggle()
+                    }
+                    .buttonStyle(.borderedProminent)
+
+                    animatedBodyView
+                        .frame(height: 400)
+                        .padding(.horizontal)
+
+                    Text("Pulse Animation")
+                        .font(.headline)
+
+                    Text("Tap a muscle to see pulse effect")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+
+                    BodyView(gender: .male, side: .front)
+                        .highlight(.chest, linearGradient: [.red, .orange])
+                        .highlight(.biceps, color: .blue)
+                        .highlight(.quadriceps, color: .purple)
+                        .selected(selectedMuscle)
+                        .pulseSelected(speed: 1.5, range: 0.6...1.0)
+                        .onMuscleSelected { muscle, _ in
+                            selectedMuscle = muscle
+                        }
+                        .frame(height: 400)
+                        .padding(.horizontal)
+
+                    Text("Shadow + Neon Style")
+                        .font(.headline)
+
+                    BodyView(gender: .male, side: .front)
+                        .highlight(.chest, linearGradient: [.cyan, .blue])
+                        .highlight(.biceps, color: .cyan)
+                        .highlight(.quadriceps, linearGradient: [.cyan, .teal])
+                        .bodyStyle(.neon)
+                        .frame(height: 400)
+                        .padding(.horizontal)
+                        .background(.black, in: RoundedRectangle(cornerRadius: 12))
+                        .padding(.horizontal)
+                }
+                .padding(.vertical)
+            }
+            .navigationTitle("Animation")
+        }
+    }
+
+    @ViewBuilder
+    private var animatedBodyView: some View {
+        if showUpperBody {
+            BodyView(gender: .male, side: .front)
+                .highlight(.chest, color: .red)
+                .highlight(.biceps, color: .orange)
+                .highlight(.deltoids, color: .yellow)
+                .highlight(.abs, color: .red, opacity: 0.6)
+                .animated(duration: 0.5)
+        } else {
+            BodyView(gender: .male, side: .front)
+                .highlight(.quadriceps, color: .blue)
+                .highlight(.calves, color: .cyan)
+                .highlight(.hamstring, color: .purple)
+                .animated(duration: 0.5)
         }
     }
 }

@@ -36,14 +36,32 @@ public struct MuscleIntensity: Sendable {
 }
 
 /// Data model for a highlighted muscle with color and opacity.
-public struct MuscleHighlight: Sendable {
+public struct MuscleHighlight: Sendable, Equatable {
     public let muscle: Muscle
     public let color: Color
     public let opacity: Double
+    public let fill: MuscleFill
 
+    /// Creates a highlight with a solid color.
     public init(muscle: Muscle, color: Color, opacity: Double = 1.0) {
         self.muscle = muscle
         self.color = color
         self.opacity = opacity
+        self.fill = .color(color)
+    }
+
+    /// Creates a highlight with a custom fill (gradient or color).
+    public init(muscle: Muscle, fill: MuscleFill, opacity: Double = 1.0) {
+        self.muscle = muscle
+        self.fill = fill
+        self.opacity = opacity
+        switch fill {
+        case .color(let color):
+            self.color = color
+        case .linearGradient(let colors, _, _):
+            self.color = colors.first ?? .clear
+        case .radialGradient(let colors, _, _, _):
+            self.color = colors.first ?? .clear
+        }
     }
 }

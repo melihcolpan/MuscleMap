@@ -16,6 +16,7 @@ struct BodyRenderer {
     let highlights: [Muscle: MuscleHighlight]
     let style: BodyViewStyle
     let selectedMuscle: Muscle?
+    var selectionPulseFactor: Double = 1.0
 
     private let pathCache = PathCache()
 
@@ -29,17 +30,22 @@ struct BodyRenderer {
         let offsetY = (size.height - viewBox.size.height * scale) / 2 - viewBox.origin.y * scale
 
         let bodyParts = BodyPathProvider.paths(gender: gender, side: side)
+        let hasShadow = style.shadowRadius > 0
 
         for bodyPart in bodyParts {
             let muscle = bodyPart.slug.muscle
             let highlight = muscle.flatMap { highlights[$0] }
             let isSelected = muscle != nil && selectedMuscle == muscle
 
-            let fillColor = resolveColor(
+            let fill = resolveFill(
                 for: bodyPart.slug,
                 highlight: highlight,
                 isSelected: isSelected
             )
+
+            let highlightOpacity = highlight?.opacity ?? 1.0
+            let needsOpacityLayer = highlightOpacity < 1.0 && highlight != nil
+            let needsShadow = hasShadow && highlight != nil
 
             let allPaths: [(String, MuscleSide)] =
                 bodyPart.common.map { ($0, .both) } +
@@ -53,7 +59,38 @@ struct BodyRenderer {
                     offsetX: offsetX,
                     offsetY: offsetY
                 )
-                context.fill(path, with: .color(fillColor))
+
+                let boundingRect = path.boundingRect
+                let shading = fill.shading(in: boundingRect)
+
+                if needsShadow || needsOpacityLayer {
+                    context.drawLayer { layerContext in
+                        if needsShadow {
+                            layerContext.addFilter(.shadow(
+                                color: style.shadowColor,
+                                radius: style.shadowRadius,
+                                x: style.shadowOffset.width,
+                                y: style.shadowOffset.height
+                            ))
+                        }
+                        if needsOpacityLayer {
+                            layerContext.opacity = highlightOpacity
+                        }
+                        if isSelected && selectionPulseFactor != 1.0 {
+                            layerContext.opacity *= selectionPulseFactor
+                        }
+                        layerContext.fill(path, with: shading)
+                    }
+                } else {
+                    if isSelected && selectionPulseFactor != 1.0 {
+                        context.drawLayer { layerContext in
+                            layerContext.opacity = selectionPulseFactor
+                            layerContext.fill(path, with: shading)
+                        }
+                    } else {
+                        context.fill(path, with: shading)
+                    }
+                }
 
                 if style.strokeWidth > 0 {
                     context.stroke(
@@ -110,23 +147,23 @@ struct BodyRenderer {
 
     // MARK: - Private
 
-    private func resolveColor(
+    private func resolveFill(
         for slug: BodySlug,
         highlight: MuscleHighlight?,
         isSelected: Bool
-    ) -> Color {
+    ) -> MuscleFill {
         if slug == .hair {
-            return style.hairColor
+            return .color(style.hairColor)
         }
         if slug == .head {
-            return style.headColor
+            return .color(style.headColor)
         }
         if isSelected {
-            return style.selectionColor
+            return .color(style.selectionColor)
         }
         if let highlight {
-            return highlight.color.opacity(highlight.opacity)
+            return highlight.fill
         }
-        return style.defaultFillColor
+        return .color(style.defaultFillColor)
     }
 }

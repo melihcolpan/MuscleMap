@@ -18,6 +18,10 @@ Supports **male & female** body models with **front & back** views.
 - Heatmap visualization with customizable color scales
 - Tap-to-select with hit testing
 - 4 preset styles (default, minimal, neon, medical)
+- **Gradient fills** (linear & radial gradients)
+- **Transition animations** (fade in/out on highlight changes)
+- **Pulse/glow animation** (for selected muscles)
+- **Shadow/drop shadow** support
 - Zero external dependencies
 - iOS 17+ / macOS 14+
 
@@ -29,7 +33,7 @@ Add to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/melihcolpan/MuscleMap.git", from: "1.0.0")
+    .package(url: "https://github.com/melihcolpan/MuscleMap.git", from: "1.1.0")
 ]
 ```
 
@@ -60,6 +64,26 @@ BodyView(gender: .male, side: .front)
     .highlight(.chest, color: .red)
     .highlight(.abs, color: .yellow, opacity: 0.6)
     .highlight([.quadriceps, .calves], color: .orange)
+```
+
+### Gradient Highlighting
+
+<p align="center">
+  <img src="Screenshots/gradient_linear.png" width="180" alt="Linear Gradient">
+  <img src="Screenshots/gradient_radial.png" width="180" alt="Radial Gradient">
+  <img src="Screenshots/gradient_neon.png" width="180" alt="Neon Gradient">
+</p>
+
+```swift
+// Linear gradient (top to bottom)
+BodyView(gender: .male, side: .front)
+    .highlight(.chest, linearGradient: [.red, .orange], startPoint: .top, endPoint: .bottom)
+
+// Radial gradient (center outward)
+    .highlight(.biceps, radialGradient: [.white, .blue], center: .center, endRadius: 40)
+
+// Mix gradients and solid colors
+    .highlight(.quadriceps, color: .purple)
 ```
 
 ### Tap Detection
@@ -128,7 +152,7 @@ BodyView(gender: .male, side: .front)
 |-------|-------------|
 | `.default` | Gray fill, green selection |
 | `.minimal` | Subtle fill, thin strokes |
-| `.neon` | Dark background, cyan selection |
+| `.neon` | Dark background, cyan selection, glow shadow |
 | `.medical` | Clinical blue-gray tones |
 
 Custom:
@@ -141,8 +165,39 @@ let style = BodyViewStyle(
     selectionStrokeColor: .yellow,
     selectionStrokeWidth: 3,
     headColor: .gray,
-    hairColor: .black
+    hairColor: .black,
+    shadowColor: .blue.opacity(0.5),
+    shadowRadius: 6,
+    shadowOffset: CGSize(width: 0, height: 2)
 )
+```
+
+### Animations
+
+#### Transition Animation
+
+Smooth fade-in/fade-out when highlights change:
+
+```swift
+BodyView(gender: .male, side: .front)
+    .highlight(.chest, color: .red)
+    .animated(duration: 0.3)
+```
+
+#### Pulse Animation
+
+Pulsing glow effect on the selected muscle:
+
+```swift
+@State private var selected: Muscle?
+
+BodyView(gender: .male, side: .front)
+    .highlight(.chest, color: .red)
+    .selected(selected)
+    .pulseSelected(speed: 1.5, range: 0.6...1.0)
+    .onMuscleSelected { muscle, _ in
+        selected = muscle
+    }
 ```
 
 ### Selection State
@@ -202,4 +257,3 @@ BodyView(gender: .female, side: .back)  // Female back
 ## License
 
 MIT License. See [LICENSE](LICENSE) for details.
-
