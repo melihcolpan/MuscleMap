@@ -1,0 +1,59 @@
+/* Muscle names */
+"muscle.abs" = "Karın Kası";
+"muscle.adductors" = "Adduktorlar";
+"muscle.ankles" = "Ayak Bilekleri";
+"muscle.biceps" = "Biseps";
+"muscle.calves" = "Baldırlar";
+"muscle.chest" = "Göğüs";
+"muscle.deltoids" = "Deltoidler";
+"muscle.feet" = "Ayaklar";
+"muscle.forearm" = "Ön Kol";
+"muscle.gluteal" = "Kalça Kası";
+"muscle.hamstring" = "Arka Bacak";
+"muscle.hands" = "Eller";
+"muscle.head" = "Baş";
+"muscle.knees" = "Dizler";
+"muscle.lowerBack" = "Alt Sırt";
+"muscle.neck" = "Boyun";
+"muscle.obliques" = "Oblikler";
+"muscle.quadriceps" = "Kuadriseps";
+"muscle.tibialis" = "Ön Baldır";
+"muscle.trapezius" = "Trapez";
+"muscle.triceps" = "Triseps";
+"muscle.upperBack" = "Üst Sırt";
+"muscle.rotatorCuff" = "Rotator Manşet";
+"muscle.hipFlexors" = "Kalça Fleksörleri";
+"muscle.serratus" = "Serratus";
+"muscle.rhomboids" = "Rhomboidler";
+"muscle.upperChest" = "Üst Göğüs";
+"muscle.lowerChest" = "Alt Göğüs";
+"muscle.innerQuad" = "İç Kuadriseps";
+"muscle.outerQuad" = "Dış Kuadriseps";
+"muscle.upperAbs" = "Üst Karın";
+"muscle.lowerAbs" = "Alt Karın";
+"muscle.frontDeltoid" = "Ön Deltoid";
+"muscle.rearDeltoid" = "Arka Deltoid";
+"muscle.upperTrapezius" = "Üst Trapez";
+"muscle.lowerTrapezius" = "Alt Trapez";
+
+/* Enum display names */
+"side.left" = "Sol";
+"side.right" = "Sağ";
+"side.both" = "Her İki Taraf";
+"bodySide.front" = "Ön";
+"bodySide.back" = "Arka";
+"gender.male" = "Erkek";
+"gender.female" = "Kadın";
+
+/* Accessibility */
+"accessibility.selected" = "Seçili";
+"accessibility.notSelected" = "Seçili değil";
+"accessibility.hint.tap" = "Seçmek için çift dokunun";
+"accessibility.hint.longPress" = "Detaylar için uzun basın";
+"accessibility.bodyMap" = "Vücut kas haritası";
+"accessibility.muscleRegion" = "Kas bölgesi";
+"accessibility.heatmapLegend" = "Isı haritası yoğunluk göstergesi";
+
+/* Legend */
+"legend.low" = "Düşük";
+"legend.high" = "Yüksek";

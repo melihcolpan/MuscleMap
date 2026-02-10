@@ -1,0 +1,59 @@
+/* Muscle names */
+"muscle.abs" = "عضلات البطن";
+"muscle.adductors" = "العضلات المقربة";
+"muscle.ankles" = "الكاحل";
+"muscle.biceps" = "العضلة ذات الرأسين";
+"muscle.calves" = "عضلات الساق";
+"muscle.chest" = "الصدر";
+"muscle.deltoids" = "العضلة الدالية";
+"muscle.feet" = "القدمين";
+"muscle.forearm" = "الساعد";
+"muscle.gluteal" = "عضلات الأرداف";
+"muscle.hamstring" = "أوتار الركبة";
+"muscle.hands" = "اليدين";
+"muscle.head" = "الرأس";
+"muscle.knees" = "الركبتين";
+"muscle.lowerBack" = "أسفل الظهر";
+"muscle.neck" = "الرقبة";
+"muscle.obliques" = "العضلات المائلة";
+"muscle.quadriceps" = "العضلة الرباعية";
+"muscle.tibialis" = "العضلة الظنبوبية";
+"muscle.trapezius" = "العضلة شبه المنحرفة";
+"muscle.triceps" = "العضلة ثلاثية الرؤوس";
+"muscle.upperBack" = "أعلى الظهر";
+"muscle.rotatorCuff" = "الكفة المدورة";
+"muscle.hipFlexors" = "عضلات ثني الورك";
+"muscle.serratus" = "العضلة المنشارية";
+"muscle.rhomboids" = "العضلات المعينية";
+"muscle.upperChest" = "الصدر العلوي";
+"muscle.lowerChest" = "الصدر السفلي";
+"muscle.innerQuad" = "الرباعية الداخلية";
+"muscle.outerQuad" = "الرباعية الخارجية";
+"muscle.upperAbs" = "البطن العلوية";
+"muscle.lowerAbs" = "البطن السفلية";
+"muscle.frontDeltoid" = "الدالية الأمامية";
+"muscle.rearDeltoid" = "الدالية الخلفية";
+"muscle.upperTrapezius" = "شبه المنحرفة العلوية";
+"muscle.lowerTrapezius" = "شبه المنحرفة السفلية";
+
+/* Enum display names */
+"side.left" = "يسار";
+"side.right" = "يمين";
+"side.both" = "كلاهما";
+"bodySide.front" = "الأمام";
+"bodySide.back" = "الخلف";
+"gender.male" = "ذكر";
+"gender.female" = "أنثى";
+
+/* Accessibility */
+"accessibility.selected" = "محدد";
+"accessibility.notSelected" = "غير محدد";
+"accessibility.hint.tap" = "انقر مرتين للتحديد";
+"accessibility.hint.longPress" = "اضغط مطولاً للتفاصيل";
+"accessibility.bodyMap" = "خريطة عضلات الجسم";
+"accessibility.muscleRegion" = "منطقة عضلية";
+"accessibility.heatmapLegend" = "مفتاح شدة الخريطة الحرارية";
+
+/* Legend */
+"legend.low" = "منخفض";
+"legend.high" = "مرتفع";

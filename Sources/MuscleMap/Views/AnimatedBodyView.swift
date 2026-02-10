@@ -57,6 +57,18 @@ struct AnimatedBodyContainer: View {
                     longPressDuration: longPressDuration
                 )
             }
+            .overlay {
+                BodyAccessibilityOverlay(
+                    gender: gender,
+                    side: side,
+                    highlights: highlights,
+                    style: style,
+                    selectedMuscles: selectedMuscles,
+                    size: geometry.size,
+                    onMuscleSelected: onMuscleSelected,
+                    onMuscleLongPressed: onMuscleLongPressed
+                )
+            }
         }
         .onChange(of: highlights) { oldValue, newValue in
             previousHighlights = currentHighlights
@@ -228,6 +240,18 @@ private struct PulseBodyCanvas: View {
                         content: tooltipContent
                     )
                 }
+            }
+            .overlay {
+                BodyAccessibilityOverlay(
+                    gender: gender,
+                    side: side,
+                    highlights: highlights,
+                    style: style,
+                    selectedMuscles: selectedMuscles,
+                    size: geometry.size,
+                    onMuscleSelected: onMuscleSelected,
+                    onMuscleLongPressed: onMuscleLongPressed
+                )
             }
         }
     }

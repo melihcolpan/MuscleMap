@@ -1,0 +1,59 @@
+/* Muscle names */
+"muscle.abs" = "Bauchmuskeln";
+"muscle.adductors" = "Adduktoren";
+"muscle.ankles" = "Knöchel";
+"muscle.biceps" = "Bizeps";
+"muscle.calves" = "Waden";
+"muscle.chest" = "Brust";
+"muscle.deltoids" = "Deltamuskeln";
+"muscle.feet" = "Füße";
+"muscle.forearm" = "Unterarm";
+"muscle.gluteal" = "Gesäßmuskel";
+"muscle.hamstring" = "Oberschenkelrückseite";
+"muscle.hands" = "Hände";
+"muscle.head" = "Kopf";
+"muscle.knees" = "Knie";
+"muscle.lowerBack" = "Unterer Rücken";
+"muscle.neck" = "Nacken";
+"muscle.obliques" = "Schräge Bauchmuskeln";
+"muscle.quadriceps" = "Quadrizeps";
+"muscle.tibialis" = "Schienbeinmuskel";
+"muscle.trapezius" = "Trapezmuskel";
+"muscle.triceps" = "Trizeps";
+"muscle.upperBack" = "Oberer Rücken";
+"muscle.rotatorCuff" = "Rotatorenmanschette";
+"muscle.hipFlexors" = "Hüftbeuger";
+"muscle.serratus" = "Sägemuskel";
+"muscle.rhomboids" = "Rautenmuskeln";
+"muscle.upperChest" = "Obere Brust";
+"muscle.lowerChest" = "Untere Brust";
+"muscle.innerQuad" = "Innerer Quadrizeps";
+"muscle.outerQuad" = "Äußerer Quadrizeps";
+"muscle.upperAbs" = "Obere Bauchmuskeln";
+"muscle.lowerAbs" = "Untere Bauchmuskeln";
+"muscle.frontDeltoid" = "Vorderer Deltamuskel";
+"muscle.rearDeltoid" = "Hinterer Deltamuskel";
+"muscle.upperTrapezius" = "Oberer Trapezmuskel";
+"muscle.lowerTrapezius" = "Unterer Trapezmuskel";
+
+/* Enum display names */
+"side.left" = "Links";
+"side.right" = "Rechts";
+"side.both" = "Beide";
+"bodySide.front" = "Vorderseite";
+"bodySide.back" = "Rückseite";
+"gender.male" = "Männlich";
+"gender.female" = "Weiblich";
+
+/* Accessibility */
+"accessibility.selected" = "Ausgewählt";
+"accessibility.notSelected" = "Nicht ausgewählt";
+"accessibility.hint.tap" = "Zum Auswählen doppeltippen";
+"accessibility.hint.longPress" = "Für Details lange drücken";
+"accessibility.bodyMap" = "Körper-Muskelkarte";
+"accessibility.muscleRegion" = "Muskelbereich";
+"accessibility.heatmapLegend" = "Heatmap-Intensitätslegende";
+
+/* Legend */
+"legend.low" = "Niedrig";
+"legend.high" = "Hoch";

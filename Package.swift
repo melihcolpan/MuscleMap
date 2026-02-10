@@ -13,6 +13,7 @@ import PackageDescription
 
 let package = Package(
     name: "MuscleMap",
+    defaultLocalization: "en",
     platforms: [
         .iOS(.v17),
         .macOS(.v14)
@@ -26,7 +27,8 @@ let package = Package(
     targets: [
         .target(
             name: "MuscleMap",
-            path: "Sources/MuscleMap"
+            path: "Sources/MuscleMap",
+            resources: [.process("Resources")]
         ),
         .testTarget(
             name: "MuscleMapTests",

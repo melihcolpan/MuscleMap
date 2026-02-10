@@ -1,0 +1,59 @@
+/* Muscle names */
+"muscle.abs" = "腹肌";
+"muscle.adductors" = "内收肌";
+"muscle.ankles" = "脚踝";
+"muscle.biceps" = "肱二头肌";
+"muscle.calves" = "小腿";
+"muscle.chest" = "胸肌";
+"muscle.deltoids" = "三角肌";
+"muscle.feet" = "脚";
+"muscle.forearm" = "前臂";
+"muscle.gluteal" = "臀肌";
+"muscle.hamstring" = "腘绳肌";
+"muscle.hands" = "手";
+"muscle.head" = "头";
+"muscle.knees" = "膝盖";
+"muscle.lowerBack" = "下背";
+"muscle.neck" = "颈部";
+"muscle.obliques" = "腹外斜肌";
+"muscle.quadriceps" = "股四头肌";
+"muscle.tibialis" = "胫骨前肌";
+"muscle.trapezius" = "斜方肌";
+"muscle.triceps" = "肱三头肌";
+"muscle.upperBack" = "上背";
+"muscle.rotatorCuff" = "肩袖";
+"muscle.hipFlexors" = "髋屈肌";
+"muscle.serratus" = "前锯肌";
+"muscle.rhomboids" = "菱形肌";
+"muscle.upperChest" = "上胸";
+"muscle.lowerChest" = "下胸";
+"muscle.innerQuad" = "股内侧肌";
+"muscle.outerQuad" = "股外侧肌";
+"muscle.upperAbs" = "上腹肌";
+"muscle.lowerAbs" = "下腹肌";
+"muscle.frontDeltoid" = "三角肌前束";
+"muscle.rearDeltoid" = "三角肌后束";
+"muscle.upperTrapezius" = "上斜方肌";
+"muscle.lowerTrapezius" = "下斜方肌";
+
+/* Enum display names */
+"side.left" = "左";
+"side.right" = "右";
+"side.both" = "两侧";
+"bodySide.front" = "正面";
+"bodySide.back" = "背面";
+"gender.male" = "男性";
+"gender.female" = "女性";
+
+/* Accessibility */
+"accessibility.selected" = "已选择";
+"accessibility.notSelected" = "未选择";
+"accessibility.hint.tap" = "轻点两下以选择";
+"accessibility.hint.longPress" = "长按查看详情";
+"accessibility.bodyMap" = "身体肌肉图";
+"accessibility.muscleRegion" = "肌肉区域";
+"accessibility.heatmapLegend" = "热力图强度图例";
+
+/* Legend */
+"legend.low" = "低";
+"legend.high" = "高";

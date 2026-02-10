@@ -1,0 +1,59 @@
+/* Muscle names */
+"muscle.abs" = "Abdominais";
+"muscle.adductors" = "Adutores";
+"muscle.ankles" = "Tornozelos";
+"muscle.biceps" = "Bíceps";
+"muscle.calves" = "Panturrilhas";
+"muscle.chest" = "Peito";
+"muscle.deltoids" = "Deltoides";
+"muscle.feet" = "Pés";
+"muscle.forearm" = "Antebraço";
+"muscle.gluteal" = "Glúteos";
+"muscle.hamstring" = "Isquiotibiais";
+"muscle.hands" = "Mãos";
+"muscle.head" = "Cabeça";
+"muscle.knees" = "Joelhos";
+"muscle.lowerBack" = "Lombar";
+"muscle.neck" = "Pescoço";
+"muscle.obliques" = "Oblíquos";
+"muscle.quadriceps" = "Quadríceps";
+"muscle.tibialis" = "Tibial";
+"muscle.trapezius" = "Trapézio";
+"muscle.triceps" = "Tríceps";
+"muscle.upperBack" = "Costas Superior";
+"muscle.rotatorCuff" = "Manguito Rotador";
+"muscle.hipFlexors" = "Flexores do Quadril";
+"muscle.serratus" = "Serrátil";
+"muscle.rhomboids" = "Romboides";
+"muscle.upperChest" = "Peito Superior";
+"muscle.lowerChest" = "Peito Inferior";
+"muscle.innerQuad" = "Quadríceps Interno";
+"muscle.outerQuad" = "Quadríceps Externo";
+"muscle.upperAbs" = "Abdominais Superiores";
+"muscle.lowerAbs" = "Abdominais Inferiores";
+"muscle.frontDeltoid" = "Deltoide Frontal";
+"muscle.rearDeltoid" = "Deltoide Posterior";
+"muscle.upperTrapezius" = "Trapézio Superior";
+"muscle.lowerTrapezius" = "Trapézio Inferior";
+
+/* Enum display names */
+"side.left" = "Esquerda";
+"side.right" = "Direita";
+"side.both" = "Ambos";
+"bodySide.front" = "Frente";
+"bodySide.back" = "Costas";
+"gender.male" = "Masculino";
+"gender.female" = "Feminino";
+
+/* Accessibility */
+"accessibility.selected" = "Selecionado";
+"accessibility.notSelected" = "Não selecionado";
+"accessibility.hint.tap" = "Toque duas vezes para selecionar";
+"accessibility.hint.longPress" = "Pressione e segure para detalhes";
+"accessibility.bodyMap" = "Mapa muscular do corpo";
+"accessibility.muscleRegion" = "Região muscular";
+"accessibility.heatmapLegend" = "Legenda de intensidade do mapa de calor";
+
+/* Legend */
+"legend.low" = "Baixo";
+"legend.high" = "Alto";

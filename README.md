@@ -29,6 +29,8 @@ Supports **male & female** body models with **front & back** views.
 - **Transition animations** (fade in/out on highlight changes)
 - **Pulse/glow animation** (for selected muscles)
 - **Shadow/drop shadow** support
+- **Accessibility** (VoiceOver support with localized muscle names)
+- **Localization** (11 languages: EN, TR, DE, ES, FR, JA, ZH, KO, AR, PT-BR, RU)
 - Zero external dependencies
 - iOS 17+ / macOS 14+
 
@@ -40,7 +42,7 @@ Add to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/melihcolpan/MuscleMap.git", from: "1.4.0")
+    .package(url: "https://github.com/melihcolpan/MuscleMap.git", from: "1.5.0")
 ]
 ```
 
@@ -465,6 +467,54 @@ BodyView(gender: .female, side: .back)  // Female back
 | Rear Deltoid | `.rearDeltoid` | `.deltoids` |
 | Upper Trapezius | `.upperTrapezius` | `.trapezius` |
 | Lower Trapezius | `.lowerTrapezius` | `.trapezius` |
+
+## Accessibility
+
+MuscleMap includes full VoiceOver support. Each muscle region is exposed as an accessibility element with:
+
+- Localized muscle name as the accessibility label
+- Selection state ("Selected" / "Not selected")
+- Tap and long press hints
+- Top-to-bottom traversal order (anatomical navigation)
+
+Cosmetic parts (e.g., head) are excluded from the accessibility tree.
+
+```swift
+// Accessibility works automatically — no extra configuration needed
+BodyView(gender: .male, side: .front)
+    .highlight(.chest, color: .red)
+    .onMuscleSelected { muscle, side in
+        // VoiceOver users can double-tap to select
+    }
+```
+
+## Localization
+
+All muscle names, side labels, and accessibility strings are localized in **11 languages**:
+
+| Language | Code |
+|----------|------|
+| English | `en` |
+| Turkish | `tr` |
+| German | `de` |
+| Spanish | `es` |
+| French | `fr` |
+| Japanese | `ja` |
+| Chinese (Simplified) | `zh-Hans` |
+| Korean | `ko` |
+| Arabic | `ar` |
+| Portuguese (Brazil) | `pt-BR` |
+| Russian | `ru` |
+
+Localized names are available via `displayName`:
+
+```swift
+// Returns localized name based on user's device language
+Muscle.chest.displayName        // "Chest" (EN), "Göğüs" (TR), "Brust" (DE)
+MuscleSide.left.displayName     // "Left" (EN), "Sol" (TR), "Links" (DE)
+BodySide.front.displayName      // "Front" (EN), "Ön" (TR), "Vorderseite" (DE)
+BodyGender.male.displayName     // "Male" (EN), "Erkek" (TR), "Männlich" (DE)
+```
 
 ## Requirements
 

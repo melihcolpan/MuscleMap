@@ -38,24 +38,28 @@ public struct HeatmapLegendView: View {
         interpolation: ColorInterpolation = .linear,
         orientation: Axis = .horizontal,
         barThickness: CGFloat = 16,
-        labelMin: String = "Low",
-        labelMax: String = "High",
+        labelMin: String? = nil,
+        labelMax: String? = nil,
         steps: Int = 32
     ) {
         self.colorScale = colorScale
         self.interpolation = interpolation
         self.orientation = orientation
         self.barThickness = barThickness
-        self.labelMin = labelMin
-        self.labelMax = labelMax
+        self.labelMin = labelMin ?? NSLocalizedString("legend.low", bundle: .module, comment: "")
+        self.labelMax = labelMax ?? NSLocalizedString("legend.high", bundle: .module, comment: "")
         self.steps = max(steps, 2)
     }
 
     public var body: some View {
         if orientation == .horizontal {
             horizontalLayout
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel(NSLocalizedString("accessibility.heatmapLegend", bundle: .module, comment: ""))
         } else {
             verticalLayout
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel(NSLocalizedString("accessibility.heatmapLegend", bundle: .module, comment: ""))
         }
     }
 

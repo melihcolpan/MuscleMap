@@ -1,0 +1,59 @@
+/* Muscle names */
+"muscle.abs" = "복근";
+"muscle.adductors" = "내전근";
+"muscle.ankles" = "발목";
+"muscle.biceps" = "이두근";
+"muscle.calves" = "종아리";
+"muscle.chest" = "가슴";
+"muscle.deltoids" = "삼각근";
+"muscle.feet" = "발";
+"muscle.forearm" = "전완근";
+"muscle.gluteal" = "둔근";
+"muscle.hamstring" = "햄스트링";
+"muscle.hands" = "손";
+"muscle.head" = "머리";
+"muscle.knees" = "무릎";
+"muscle.lowerBack" = "하부 등";
+"muscle.neck" = "목";
+"muscle.obliques" = "복사근";
+"muscle.quadriceps" = "대퇴사두근";
+"muscle.tibialis" = "전경골근";
+"muscle.trapezius" = "승모근";
+"muscle.triceps" = "삼두근";
+"muscle.upperBack" = "상부 등";
+"muscle.rotatorCuff" = "회전근개";
+"muscle.hipFlexors" = "고관절 굴근";
+"muscle.serratus" = "전거근";
+"muscle.rhomboids" = "능형근";
+"muscle.upperChest" = "상부 가슴";
+"muscle.lowerChest" = "하부 가슴";
+"muscle.innerQuad" = "내측 대퇴사두근";
+"muscle.outerQuad" = "외측 대퇴사두근";
+"muscle.upperAbs" = "상부 복근";
+"muscle.lowerAbs" = "하부 복근";
+"muscle.frontDeltoid" = "전면 삼각근";
+"muscle.rearDeltoid" = "후면 삼각근";
+"muscle.upperTrapezius" = "상부 승모근";
+"muscle.lowerTrapezius" = "하부 승모근";
+
+/* Enum display names */
+"side.left" = "왼쪽";
+"side.right" = "오른쪽";
+"side.both" = "양쪽";
+"bodySide.front" = "전면";
+"bodySide.back" = "후면";
+"gender.male" = "남성";
+"gender.female" = "여성";
+
+/* Accessibility */
+"accessibility.selected" = "선택됨";
+"accessibility.notSelected" = "선택되지 않음";
+"accessibility.hint.tap" = "선택하려면 이중 탭";
+"accessibility.hint.longPress" = "길게 눌러 상세 보기";
+"accessibility.bodyMap" = "신체 근육 지도";
+"accessibility.muscleRegion" = "근육 부위";
+"accessibility.heatmapLegend" = "히트맵 강도 범례";
+
+/* Legend */
+"legend.low" = "낮음";
+"legend.high" = "높음";

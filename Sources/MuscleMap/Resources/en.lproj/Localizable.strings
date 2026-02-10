@@ -1,0 +1,59 @@
+/* Muscle names */
+"muscle.abs" = "Abs";
+"muscle.adductors" = "Adductors";
+"muscle.ankles" = "Ankles";
+"muscle.biceps" = "Biceps";
+"muscle.calves" = "Calves";
+"muscle.chest" = "Chest";
+"muscle.deltoids" = "Deltoids";
+"muscle.feet" = "Feet";
+"muscle.forearm" = "Forearm";
+"muscle.gluteal" = "Gluteal";
+"muscle.hamstring" = "Hamstring";
+"muscle.hands" = "Hands";
+"muscle.head" = "Head";
+"muscle.knees" = "Knees";
+"muscle.lowerBack" = "Lower Back";
+"muscle.neck" = "Neck";
+"muscle.obliques" = "Obliques";
+"muscle.quadriceps" = "Quadriceps";
+"muscle.tibialis" = "Tibialis";
+"muscle.trapezius" = "Trapezius";
+"muscle.triceps" = "Triceps";
+"muscle.upperBack" = "Upper Back";
+"muscle.rotatorCuff" = "Rotator Cuff";
+"muscle.hipFlexors" = "Hip Flexors";
+"muscle.serratus" = "Serratus";
+"muscle.rhomboids" = "Rhomboids";
+"muscle.upperChest" = "Upper Chest";
+"muscle.lowerChest" = "Lower Chest";
+"muscle.innerQuad" = "Inner Quad";
+"muscle.outerQuad" = "Outer Quad";
+"muscle.upperAbs" = "Upper Abs";
+"muscle.lowerAbs" = "Lower Abs";
+"muscle.frontDeltoid" = "Front Deltoid";
+"muscle.rearDeltoid" = "Rear Deltoid";
+"muscle.upperTrapezius" = "Upper Trapezius";
+"muscle.lowerTrapezius" = "Lower Trapezius";
+
+/* Enum display names */
+"side.left" = "Left";
+"side.right" = "Right";
+"side.both" = "Both";
+"bodySide.front" = "Front";
+"bodySide.back" = "Back";
+"gender.male" = "Male";
+"gender.female" = "Female";
+
+/* Accessibility */
+"accessibility.selected" = "Selected";
+"accessibility.notSelected" = "Not selected";
+"accessibility.hint.tap" = "Double tap to select";
+"accessibility.hint.longPress" = "Long press for details";
+"accessibility.bodyMap" = "Body muscle map";
+"accessibility.muscleRegion" = "Muscle region";
+"accessibility.heatmapLegend" = "Heatmap intensity legend";
+
+/* Legend */
+"legend.low" = "Low";
+"legend.high" = "High";

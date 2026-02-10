@@ -1,0 +1,59 @@
+/* Muscle names */
+"muscle.abs" = "腹筋";
+"muscle.adductors" = "内転筋";
+"muscle.ankles" = "足首";
+"muscle.biceps" = "上腕二頭筋";
+"muscle.calves" = "ふくらはぎ";
+"muscle.chest" = "胸筋";
+"muscle.deltoids" = "三角筋";
+"muscle.feet" = "足";
+"muscle.forearm" = "前腕";
+"muscle.gluteal" = "臀筋";
+"muscle.hamstring" = "ハムストリング";
+"muscle.hands" = "手";
+"muscle.head" = "頭";
+"muscle.knees" = "膝";
+"muscle.lowerBack" = "腰";
+"muscle.neck" = "首";
+"muscle.obliques" = "腹斜筋";
+"muscle.quadriceps" = "大腿四頭筋";
+"muscle.tibialis" = "前脛骨筋";
+"muscle.trapezius" = "僧帽筋";
+"muscle.triceps" = "上腕三頭筋";
+"muscle.upperBack" = "背中上部";
+"muscle.rotatorCuff" = "回旋筋腱板";
+"muscle.hipFlexors" = "股関節屈筋";
+"muscle.serratus" = "前鋸筋";
+"muscle.rhomboids" = "菱形筋";
+"muscle.upperChest" = "大胸筋上部";
+"muscle.lowerChest" = "大胸筋下部";
+"muscle.innerQuad" = "内側広筋";
+"muscle.outerQuad" = "外側広筋";
+"muscle.upperAbs" = "上腹筋";
+"muscle.lowerAbs" = "下腹筋";
+"muscle.frontDeltoid" = "三角筋前部";
+"muscle.rearDeltoid" = "三角筋後部";
+"muscle.upperTrapezius" = "上部僧帽筋";
+"muscle.lowerTrapezius" = "下部僧帽筋";
+
+/* Enum display names */
+"side.left" = "左";
+"side.right" = "右";
+"side.both" = "両側";
+"bodySide.front" = "前面";
+"bodySide.back" = "背面";
+"gender.male" = "男性";
+"gender.female" = "女性";
+
+/* Accessibility */
+"accessibility.selected" = "選択中";
+"accessibility.notSelected" = "未選択";
+"accessibility.hint.tap" = "ダブルタップで選択";
+"accessibility.hint.longPress" = "長押しで詳細";
+"accessibility.bodyMap" = "筋肉マップ";
+"accessibility.muscleRegion" = "筋肉部位";
+"accessibility.heatmapLegend" = "ヒートマップ強度の凡例";
+
+/* Legend */
+"legend.low" = "低";
+"legend.high" = "高";

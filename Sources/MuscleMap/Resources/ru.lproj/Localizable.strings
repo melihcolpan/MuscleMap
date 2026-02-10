@@ -1,0 +1,59 @@
+/* Muscle names */
+"muscle.abs" = "Пресс";
+"muscle.adductors" = "Аддукторы";
+"muscle.ankles" = "Лодыжки";
+"muscle.biceps" = "Бицепс";
+"muscle.calves" = "Икры";
+"muscle.chest" = "Грудь";
+"muscle.deltoids" = "Дельтовидные";
+"muscle.feet" = "Стопы";
+"muscle.forearm" = "Предплечье";
+"muscle.gluteal" = "Ягодицы";
+"muscle.hamstring" = "Бицепс бедра";
+"muscle.hands" = "Кисти";
+"muscle.head" = "Голова";
+"muscle.knees" = "Колени";
+"muscle.lowerBack" = "Поясница";
+"muscle.neck" = "Шея";
+"muscle.obliques" = "Косые мышцы";
+"muscle.quadriceps" = "Квадрицепс";
+"muscle.tibialis" = "Передняя большеберцовая";
+"muscle.trapezius" = "Трапеция";
+"muscle.triceps" = "Трицепс";
+"muscle.upperBack" = "Верх спины";
+"muscle.rotatorCuff" = "Вращательная манжета";
+"muscle.hipFlexors" = "Сгибатели бедра";
+"muscle.serratus" = "Зубчатая мышца";
+"muscle.rhomboids" = "Ромбовидные";
+"muscle.upperChest" = "Верх груди";
+"muscle.lowerChest" = "Низ груди";
+"muscle.innerQuad" = "Внутренний квадрицепс";
+"muscle.outerQuad" = "Внешний квадрицепс";
+"muscle.upperAbs" = "Верхний пресс";
+"muscle.lowerAbs" = "Нижний пресс";
+"muscle.frontDeltoid" = "Передняя дельта";
+"muscle.rearDeltoid" = "Задняя дельта";
+"muscle.upperTrapezius" = "Верхняя трапеция";
+"muscle.lowerTrapezius" = "Нижняя трапеция";
+
+/* Enum display names */
+"side.left" = "Левая";
+"side.right" = "Правая";
+"side.both" = "Обе стороны";
+"bodySide.front" = "Передняя сторона";
+"bodySide.back" = "Задняя сторона";
+"gender.male" = "Мужское";
+"gender.female" = "Женское";
+
+/* Accessibility */
+"accessibility.selected" = "Выбрано";
+"accessibility.notSelected" = "Не выбрано";
+"accessibility.hint.tap" = "Нажмите дважды для выбора";
+"accessibility.hint.longPress" = "Долгое нажатие для подробностей";
+"accessibility.bodyMap" = "Карта мышц тела";
+"accessibility.muscleRegion" = "Область мышц";
+"accessibility.heatmapLegend" = "Легенда интенсивности тепловой карты";
+
+/* Legend */
+"legend.low" = "Низкая";
+"legend.high" = "Высокая";

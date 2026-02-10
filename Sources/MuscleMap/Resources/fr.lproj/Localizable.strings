@@ -1,0 +1,59 @@
+/* Muscle names */
+"muscle.abs" = "Abdominaux";
+"muscle.adductors" = "Adducteurs";
+"muscle.ankles" = "Chevilles";
+"muscle.biceps" = "Biceps";
+"muscle.calves" = "Mollets";
+"muscle.chest" = "Poitrine";
+"muscle.deltoids" = "Deltoïdes";
+"muscle.feet" = "Pieds";
+"muscle.forearm" = "Avant-bras";
+"muscle.gluteal" = "Fessiers";
+"muscle.hamstring" = "Ischio-jambiers";
+"muscle.hands" = "Mains";
+"muscle.head" = "Tête";
+"muscle.knees" = "Genoux";
+"muscle.lowerBack" = "Bas du dos";
+"muscle.neck" = "Cou";
+"muscle.obliques" = "Obliques";
+"muscle.quadriceps" = "Quadriceps";
+"muscle.tibialis" = "Tibial";
+"muscle.trapezius" = "Trapèze";
+"muscle.triceps" = "Triceps";
+"muscle.upperBack" = "Haut du dos";
+"muscle.rotatorCuff" = "Coiffe des rotateurs";
+"muscle.hipFlexors" = "Fléchisseurs de hanche";
+"muscle.serratus" = "Dentelé";
+"muscle.rhomboids" = "Rhomboïdes";
+"muscle.upperChest" = "Haut de poitrine";
+"muscle.lowerChest" = "Bas de poitrine";
+"muscle.innerQuad" = "Quadriceps interne";
+"muscle.outerQuad" = "Quadriceps externe";
+"muscle.upperAbs" = "Abdominaux supérieurs";
+"muscle.lowerAbs" = "Abdominaux inférieurs";
+"muscle.frontDeltoid" = "Deltoïde antérieur";
+"muscle.rearDeltoid" = "Deltoïde postérieur";
+"muscle.upperTrapezius" = "Trapèze supérieur";
+"muscle.lowerTrapezius" = "Trapèze inférieur";
+
+/* Enum display names */
+"side.left" = "Gauche";
+"side.right" = "Droite";
+"side.both" = "Les deux";
+"bodySide.front" = "Avant";
+"bodySide.back" = "Arrière";
+"gender.male" = "Masculin";
+"gender.female" = "Féminin";
+
+/* Accessibility */
+"accessibility.selected" = "Sélectionné";
+"accessibility.notSelected" = "Non sélectionné";
+"accessibility.hint.tap" = "Touchez deux fois pour sélectionner";
+"accessibility.hint.longPress" = "Appui long pour les détails";
+"accessibility.bodyMap" = "Carte musculaire du corps";
+"accessibility.muscleRegion" = "Région musculaire";
+"accessibility.heatmapLegend" = "Légende d'intensité de la carte thermique";
+
+/* Legend */
+"legend.low" = "Faible";
+"legend.high" = "Élevé";

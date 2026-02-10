@@ -108,6 +108,9 @@ public struct BodyView: View {
             .overlay {
                 makeTooltipOverlay(size: geometry.size)
             }
+            .overlay {
+                makeAccessibilityOverlay(size: geometry.size)
+            }
         }
     }
 
@@ -201,6 +204,19 @@ public struct BodyView: View {
             onMuscleDragged: onMuscleDragged,
             onMuscleDragEnded: onMuscleDragEnded,
             longPressDuration: longPressDuration
+        )
+    }
+
+    private func makeAccessibilityOverlay(size: CGSize) -> BodyAccessibilityOverlay {
+        BodyAccessibilityOverlay(
+            gender: gender,
+            side: side,
+            highlights: highlights,
+            style: style,
+            selectedMuscles: selectedMuscles,
+            size: size,
+            onMuscleSelected: wrappedOnMuscleSelected,
+            onMuscleLongPressed: onMuscleLongPressed
         )
     }
 
