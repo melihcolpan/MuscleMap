@@ -1,0 +1,21 @@
+name: MuscleMapDemoApp
+options:
+  bundleIdPrefix: com.melihcolpan
+  deploymentTarget:
+    iOS: "17.0"
+packages:
+  MuscleMap:
+    path: ../
+targets:
+  MuscleMapDemoApp:
+    type: application
+    platform: iOS
+    sources:
+      - MuscleMapDemoApp
+    dependencies:
+      - package: MuscleMap
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.melihcolpan.MuscleMapDemoApp
+      CODE_SIGN_IDENTITY: "-"
+      CODE_SIGNING_REQUIRED: "NO"
+      CODE_SIGNING_ALLOWED: "NO"
