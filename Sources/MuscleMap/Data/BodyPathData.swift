@@ -44,8 +44,8 @@ struct BodyViewBox {
     )
 
     static let maleBack = BodyViewBox(
-        origin: CGPoint(x: 860, y: 95),
-        size: CGSize(width: 600, height: 1300)
+        origin: CGPoint(x: 718, y: 95),
+        size: CGSize(width: 727, height: 1280)
     )
 
     static let femaleFront = BodyViewBox(

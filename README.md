@@ -45,7 +45,7 @@ Add to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/melihcolpan/MuscleMap.git", from: "1.6.0")
+    .package(url: "https://github.com/melihcolpan/MuscleMap.git", from: "1.6.1")
 ]
 ```
 
@@ -56,7 +56,7 @@ Or in Xcode: **File > Add Package Dependencies** and paste the repository URL.
 Add to your `Podfile`:
 
 ```ruby
-pod 'MuscleMap', '~> 1.6.0'
+pod 'MuscleMap', '~> 1.6.1'
 ```
 
 Then run `pod install`.
