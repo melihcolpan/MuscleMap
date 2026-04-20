@@ -5,10 +5,10 @@ A native SwiftUI SDK for rendering interactive human body muscle maps with highl
 Supports **male & female** body models with **front & back** views. Works with both **SwiftUI** and **UIKit**.
 
 <p align="center">
-  <img src="Screenshots/male_front_highlight.png" width="180" alt="Male Front">
-  <img src="Screenshots/male_back_highlight.png" width="180" alt="Male Back">
-  <img src="Screenshots/female_front_highlight.png" width="180" alt="Female Front">
-  <img src="Screenshots/female_back_highlight.png" width="180" alt="Female Back">
+  <img src="https://raw.githubusercontent.com/melihcolpan/MuscleMap/main/Screenshots/male_front_highlight.png" width="180" alt="Male Front">
+  <img src="https://raw.githubusercontent.com/melihcolpan/MuscleMap/main/Screenshots/male_back_highlight.png" width="180" alt="Male Back">
+  <img src="https://raw.githubusercontent.com/melihcolpan/MuscleMap/main/Screenshots/female_front_highlight.png" width="180" alt="Female Front">
+  <img src="https://raw.githubusercontent.com/melihcolpan/MuscleMap/main/Screenshots/female_back_highlight.png" width="180" alt="Female Back">
 </p>
 
 ## Features
@@ -45,7 +45,7 @@ Add to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/melihcolpan/MuscleMap.git", from: "1.6.2")
+    .package(url: "https://github.com/melihcolpan/MuscleMap.git", from: "1.6.3")
 ]
 ```
 
@@ -56,7 +56,7 @@ Or in Xcode: **File > Add Package Dependencies** and paste the repository URL.
 Add to your `Podfile`:
 
 ```ruby
-pod 'MuscleMap', '~> 1.6.2'
+pod 'MuscleMap', '~> 1.6.3'
 ```
 
 Then run `pod install`.
@@ -91,9 +91,9 @@ BodyView(gender: .male, side: .front)
 ### Gradient Highlighting
 
 <p align="center">
-  <img src="Screenshots/gradient_linear.png" width="180" alt="Linear Gradient">
-  <img src="Screenshots/gradient_radial.png" width="180" alt="Radial Gradient">
-  <img src="Screenshots/gradient_neon.png" width="180" alt="Neon Gradient">
+  <img src="https://raw.githubusercontent.com/melihcolpan/MuscleMap/main/Screenshots/gradient_linear.png" width="180" alt="Linear Gradient">
+  <img src="https://raw.githubusercontent.com/melihcolpan/MuscleMap/main/Screenshots/gradient_radial.png" width="180" alt="Radial Gradient">
+  <img src="https://raw.githubusercontent.com/melihcolpan/MuscleMap/main/Screenshots/gradient_neon.png" width="180" alt="Neon Gradient">
 </p>
 
 ```swift
@@ -120,8 +120,8 @@ BodyView(gender: .female, side: .front)
 ### Heatmap
 
 <p align="center">
-  <img src="Screenshots/heatmap_workout.png" width="200" alt="Workout Heatmap">
-  <img src="Screenshots/heatmap_thermal.png" width="200" alt="Thermal Heatmap">
+  <img src="https://raw.githubusercontent.com/melihcolpan/MuscleMap/main/Screenshots/heatmap_workout.png" width="200" alt="Workout Heatmap">
+  <img src="https://raw.githubusercontent.com/melihcolpan/MuscleMap/main/Screenshots/heatmap_thermal.png" width="200" alt="Thermal Heatmap">
 </p>
 
 ```swift
@@ -193,8 +193,8 @@ BodyView(gender: .male, side: .front)
 ### Gradient Heatmap Fill
 
 <p align="center">
-  <img src="Screenshots/heatmap_v2_gradient.png" width="220" alt="Gradient Heatmap">
-  <img src="Screenshots/heatmap_v2_stepped.png" width="220" alt="Stepped Heatmap">
+  <img src="https://raw.githubusercontent.com/melihcolpan/MuscleMap/main/Screenshots/heatmap_v2_gradient.png" width="220" alt="Gradient Heatmap">
+  <img src="https://raw.githubusercontent.com/melihcolpan/MuscleMap/main/Screenshots/heatmap_v2_stepped.png" width="220" alt="Stepped Heatmap">
 </p>
 
 Apply intra-muscle gradients based on intensity (low-to-high color within each muscle):
@@ -259,8 +259,8 @@ BodyView(gender: .male, side: .front)
 ### Styles
 
 <p align="center">
-  <img src="Screenshots/style_neon.png" width="200" alt="Neon Style">
-  <img src="Screenshots/style_medical.png" width="200" alt="Medical Style">
+  <img src="https://raw.githubusercontent.com/melihcolpan/MuscleMap/main/Screenshots/style_neon.png" width="200" alt="Neon Style">
+  <img src="https://raw.githubusercontent.com/melihcolpan/MuscleMap/main/Screenshots/style_medical.png" width="200" alt="Medical Style">
 </p>
 
 ```swift
