@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "MuscleMap"
-  s.version      = "1.6.1"
+  s.version      = "1.6.2"
   s.summary      = "A SwiftUI SDK for rendering interactive human body muscle maps."
   s.description  = <<-DESC
     MuscleMap provides a declarative way to display a human body and visualize
@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
 
   s.homepage     = "https://github.com/melihcolpan/MuscleMap"
   s.license      = { :type => "MIT", :file => "LICENSE" }
-  s.author       = { "Melih Colpan" => "melihcolpan@gmail.com" }
+  s.author       = { "Melih Colpan" => "colpanmelih@gmail.com" }
 
   s.ios.deployment_target = "17.0"
   s.osx.deployment_target = "14.0"
