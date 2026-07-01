@@ -24,9 +24,44 @@ struct AnimatedBodyContainer: View {
     let onMuscleDragEnded: (() -> Void)?
     let longPressDuration: Double
     var hideSubGroups: Bool = true
-    @State private var currentHighlights: [Muscle: MuscleHighlight] = [:]
+    @State private var currentHighlights: [Muscle: MuscleHighlight]
     @State private var previousHighlights: [Muscle: MuscleHighlight] = [:]
     @State private var progress: Double = 1.0
+
+    /// Initialize with highlights pre-populated in @State.
+    /// This ensures the first Canvas draw has correct data, fixing the first-render bug
+    /// where highlights wouldn't appear until user interaction triggered a re-render.
+    init(
+        gender: BodyGender,
+        side: BodySide,
+        highlights: [Muscle: MuscleHighlight],
+        style: BodyViewStyle,
+        selectedMuscles: Set<Muscle>,
+        animationDuration: Double,
+        selectionPulseFactor: Double,
+        onMuscleSelected: ((Muscle, MuscleSide) -> Void)?,
+        onMuscleLongPressed: ((Muscle, MuscleSide) -> Void)?,
+        onMuscleDragged: ((Muscle, MuscleSide) -> Void)?,
+        onMuscleDragEnded: (() -> Void)?,
+        longPressDuration: Double,
+        hideSubGroups: Bool = true
+    ) {
+        self.gender = gender
+        self.side = side
+        self.highlights = highlights
+        self.style = style
+        self.selectedMuscles = selectedMuscles
+        self.animationDuration = animationDuration
+        self.selectionPulseFactor = selectionPulseFactor
+        self.onMuscleSelected = onMuscleSelected
+        self.onMuscleLongPressed = onMuscleLongPressed
+        self.onMuscleDragged = onMuscleDragged
+        self.onMuscleDragEnded = onMuscleDragEnded
+        self.longPressDuration = longPressDuration
+        self.hideSubGroups = hideSubGroups
+        // Initialize @State with highlights so first Canvas draw has correct data
+        self._currentHighlights = State(initialValue: highlights)
+    }
 
     var body: some View {
         GeometryReader { geometry in
@@ -82,9 +117,8 @@ struct AnimatedBodyContainer: View {
                 progress = 1.0
             }
         }
-        .onAppear {
-            currentHighlights = highlights
-        }
+        // Note: .onAppear removed — @State is now initialized from highlights in init(),
+        // so first Canvas draw has correct data without waiting for onAppear.
     }
 
     /// Blends previous and current highlights based on animation progress.
