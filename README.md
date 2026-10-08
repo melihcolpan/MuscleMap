@@ -45,7 +45,7 @@ Add to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/melihcolpan/MuscleMap.git", from: "1.6.4")
+    .package(url: "https://github.com/melihcolpan/MuscleMap.git", from: "1.7.0")
 ]
 ```
 
@@ -56,7 +56,7 @@ Or in Xcode: **File > Add Package Dependencies** and paste the repository URL.
 Add to your `Podfile`:
 
 ```ruby
-pod 'MuscleMap', '~> 1.6.4'
+pod 'MuscleMap', '~> 1.7.0'
 ```
 
 Then run `pod install`.
@@ -179,6 +179,8 @@ BodyView(gender: .male, side: .front)
 ```
 
 Available interpolations: `.linear`, `.easeIn`, `.easeOut`, `.easeInOut`, `.step(count:)`, `.custom()`
+
+A color scale's own interpolation is used by default, so `.workoutStepped` renders in steps and `.thermalSmooth` eases. An interpolation set with `.heatmapInterpolation(_:)` or a `HeatmapConfiguration` takes precedence when it is not `.linear`.
 
 ### Heatmap Threshold
 
@@ -439,6 +441,21 @@ BodyView(gender: .female, side: .front) // Female front
 BodyView(gender: .female, side: .back)  // Female back
 ```
 
+### Checking What Is Drawn
+
+Not every muscle has artwork in every view. Use `isDrawable` to check a muscle mapping, for example in a unit test:
+
+```swift
+Muscle.rhomboids.isDrawable                               // true (drawn somewhere)
+Muscle.rhomboids.isDrawable(gender: .male, side: .back)   // true
+Muscle.rhomboids.isDrawable(gender: .male, side: .front)  // false
+
+Muscle.allCases.filter { !$0.isDrawable }
+// [.rearDeltoid, .upperTrapezius, .lowerTrapezius]
+```
+
+`.rhomboids` and `.rotatorCuff` are drawn on the back views. The rhomboids sit inside the trapezius and are only painted while highlighted or selected, so an unhighlighted body and a `.trapezius` highlight look exactly as before. The rotator cuff is the infraspinatus area above the shoulder blade; it shows the `.upperBack` highlight when it has none of its own. With sub-groups hidden (the default), tapping either returns `.trapezius` / `.upperBack`.
+
 ## Available Muscles
 
 ### Base Muscles (22)
@@ -460,8 +477,8 @@ BodyView(gender: .female, side: .back)  // Female back
 | Lower Back | `.lowerBack` |
 | Obliques | `.obliques` |
 | Quadriceps | `.quadriceps` |
-| Rhomboids | `.rhomboids` |
-| Rotator Cuff | `.rotatorCuff` |
+| Rhomboids | `.rhomboids` (back views) |
+| Rotator Cuff | `.rotatorCuff` (back views) |
 | Serratus | `.serratus` |
 | Tibialis | `.tibialis` |
 | Trapezius | `.trapezius` |
@@ -486,6 +503,8 @@ BodyView(gender: .female, side: .back)  // Female back
 | Ankles | `.ankles` | `.feet` | Yes |
 | Adductors | `.adductors` | `.hamstring` | Yes |
 | Neck | `.neck` | `.head` | Yes |
+
+`.rearDeltoid`, `.upperTrapezius` and `.lowerTrapezius` have no artwork yet; highlighting them paints nothing.
 
 ## UIKit Integration
 
