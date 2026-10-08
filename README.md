@@ -648,7 +648,9 @@ swift run --package-path Tools/ScreenshotGenerator ScreenshotGenerator Screensho
                                              # regenerate the README screenshots
 ```
 
-Every push and pull request runs the tests, an iOS build, the demo app build and `pod lib lint` on GitHub Actions.
+Every push and pull request runs the tests, an iOS build, the demo app build, the documentation build and `pod lib lint` on GitHub Actions. Dependabot keeps the workflow's actions up to date.
+
+The API documentation is on the [Swift Package Index](https://swiftpackageindex.com/melihcolpan/MuscleMap/documentation/musclemap).
 
 ## License
 
