@@ -22,6 +22,19 @@ final class SnapshotTests: XCTestCase {
     /// The snapshot fails when more than this fraction of pixels differ.
     private let maxDifferentFraction = 0.002
 
+    // Fixed sRGB colors: system colors such as .red and .orange change between OS
+    // releases (they did in macOS 26), which would fail snapshots that are still correct.
+    private static let orange = Color(.sRGB, red: 1.0, green: 0.55, blue: 0.1)
+    private static let red = Color(.sRGB, red: 0.9, green: 0.2, blue: 0.2)
+    private static let purple = Color(.sRGB, red: 0.55, green: 0.3, blue: 0.85)
+    private static let blue = Color(.sRGB, red: 0.15, green: 0.45, blue: 0.95)
+    private static let teal = Color(.sRGB, red: 0.1, green: 0.65, blue: 0.65)
+    private static let yellow = Color(.sRGB, red: 1.0, green: 0.85, blue: 0.2)
+
+    private let colorScale = HeatmapColorScale(colors: [
+        Color(.sRGB, red: 0.8, green: 0.8, blue: 0.8), SnapshotTests.yellow, SnapshotTests.orange, SnapshotTests.red,
+    ])
+
     private let heatmap: [MuscleIntensity] = [
         MuscleIntensity(muscle: .chest, intensity: 0.9),
         MuscleIntensity(muscle: .trapezius, intensity: 0.7),
@@ -37,7 +50,7 @@ final class SnapshotTests: XCTestCase {
             for side in BodySide.allCases {
                 try assertSnapshot(BodyView(gender: gender, side: side), named: "\(gender.rawValue)_\(side.rawValue)")
                 try assertSnapshot(
-                    BodyView(gender: gender, side: side).heatmap(heatmap),
+                    BodyView(gender: gender, side: side).heatmap(heatmap, colorScale: colorScale),
                     named: "\(gender.rawValue)_\(side.rawValue)_heatmap"
                 )
             }
@@ -48,11 +61,11 @@ final class SnapshotTests: XCTestCase {
         for gender in BodyGender.allCases {
             let view = BodyView(gender: gender, side: .back)
                 .showSubGroups()
-                .highlight(.upperTrapezius, color: .orange)
-                .highlight(.rhomboids, color: .red)
-                .highlight(.lowerTrapezius, color: .purple)
-                .highlight(.rearDeltoid, color: .blue)
-                .highlight(.rotatorCuff, color: .teal)
+                .highlight(.upperTrapezius, color: Self.orange)
+                .highlight(.rhomboids, color: Self.red)
+                .highlight(.lowerTrapezius, color: Self.purple)
+                .highlight(.rearDeltoid, color: Self.blue)
+                .highlight(.rotatorCuff, color: Self.teal)
             try assertSnapshot(view, named: "\(gender.rawValue)_back_regions")
         }
     }
