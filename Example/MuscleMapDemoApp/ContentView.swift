@@ -662,10 +662,49 @@ struct SubGroupsDemo: View {
                     }
                     .padding(.horizontal)
 
+                    Text("Back Regions")
+                        .font(.headline)
+
+                    Text("Upper and lower trapezius, rhomboids, rear deltoid and rotator cuff.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+
+                    HStack(spacing: 16) {
+                        ForEach(BodyGender.allCases, id: \.self) { gender in
+                            BodyView(gender: gender, side: .back)
+                                .showSubGroups()
+                                .highlight(.upperTrapezius, color: .orange)
+                                .highlight(.rhomboids, color: .red)
+                                .highlight(.lowerTrapezius, color: .purple)
+                                .highlight(.rearDeltoid, color: .blue)
+                                .highlight(.rotatorCuff, color: .teal)
+                                .selected(selectedMuscle)
+                                .onMuscleSelected { muscle, _ in
+                                    selectedMuscle = muscle
+                                }
+                                .frame(height: 350)
+                        }
+                    }
+                    .padding(.horizontal)
+
+                    HStack(spacing: 12) {
+                        ForEach([(Muscle.upperTrapezius, Color.orange), (.rhomboids, .red), (.lowerTrapezius, .purple), (.rearDeltoid, .blue), (.rotatorCuff, .teal)], id: \.0) { muscle, color in
+                            HStack(spacing: 4) {
+                                Circle().fill(color).frame(width: 8, height: 8)
+                                Text(muscle.displayName).font(.caption2)
+                            }
+                        }
+                    }
+                    .padding(.horizontal)
+
                     if let muscle = selectedMuscle {
                         VStack(spacing: 4) {
                             Text(muscle.displayName)
                                 .font(.title3.bold())
+                            Text("Drawn on: \(drawnViews(of: muscle))")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
                             if muscle.isSubGroup, let parent = muscle.parentGroup {
                                 Text("Sub-group of \(parent.displayName)")
                                     .font(.caption)
@@ -683,6 +722,13 @@ struct SubGroupsDemo: View {
             }
             .navigationTitle("Sub-Groups")
         }
+    }
+
+    private func drawnViews(of muscle: Muscle) -> String {
+        BodySide.allCases
+            .filter { side in BodyGender.allCases.contains { muscle.isDrawable(gender: $0, side: side) } }
+            .map(\.displayName)
+            .joined(separator: ", ")
     }
 }
 

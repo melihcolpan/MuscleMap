@@ -8,3 +8,4 @@ DerivedData/
 .swiftpm/xcode/xcuserdata/
 .netrc
 TODO.md
+Tools/ScreenshotGenerator/.build

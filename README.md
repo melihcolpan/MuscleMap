@@ -162,6 +162,10 @@ let custom = HeatmapColorScale(colors: [.blue, .purple, .pink])
 
 ### Color Interpolation
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/melihcolpan/MuscleMap/main/Screenshots/heatmap_stepped.png" width="180" alt="Stepped Heatmap">
+</p>
+
 Control how intensity values map to colors across the scale:
 
 ```swift
@@ -443,18 +447,41 @@ BodyView(gender: .female, side: .back)  // Female back
 
 ### Checking What Is Drawn
 
-Not every muscle has artwork in every view. Use `isDrawable` to check a muscle mapping, for example in a unit test:
+<p align="center">
+  <img src="https://raw.githubusercontent.com/melihcolpan/MuscleMap/main/Screenshots/back_regions.png" width="180" alt="Back Regions">
+</p>
+
+Every muscle is drawn in at least one view, but many only on the front or the back. Use `isDrawable` to check a muscle mapping for a specific view, for example in a unit test:
 
 ```swift
 Muscle.rhomboids.isDrawable                               // true (drawn somewhere)
 Muscle.rhomboids.isDrawable(gender: .male, side: .back)   // true
 Muscle.rhomboids.isDrawable(gender: .male, side: .front)  // false
-
-Muscle.allCases.filter { !$0.isDrawable }
-// [.rearDeltoid, .upperTrapezius, .lowerTrapezius]
+Muscle.head.isDrawable(gender: .female, side: .back)      // false, the hair covers it
 ```
 
-`.rhomboids` and `.rotatorCuff` are drawn on the back views. The rhomboids sit inside the trapezius and are only painted while highlighted or selected, so an unhighlighted body and a `.trapezius` highlight look exactly as before. The rotator cuff is the infraspinatus area above the shoulder blade; it shows the `.upperBack` highlight when it has none of its own. With sub-groups hidden (the default), tapping either returns `.trapezius` / `.upperBack`.
+The back views have these extra regions (shown above with `.showSubGroups()`):
+
+- `.upperTrapezius` and `.lowerTrapezius`: the trapezius above and below the rhomboids. On the front views the visible trapezius is the upper part.
+- `.rhomboids`: inside the trapezius, painted only while highlighted or selected, so an unhighlighted body and a `.trapezius` highlight look exactly as before.
+- `.rearDeltoid`: the deltoid as seen from behind.
+- `.rotatorCuff`: the infraspinatus area above the shoulder blade. It shows the `.upperBack` highlight when it has none of its own.
+
+With sub-groups hidden (the default), tapping the rhomboids or the rotator cuff returns `.trapezius` / `.upperBack`.
+
+### Faster First Render
+
+Creating a `BodyView` starts parsing the body artwork in the background. To have it ready before the first body appears, start it at launch:
+
+```swift
+@main
+struct MyApp: App {
+    init() {
+        BodyView.preloadArtwork()
+    }
+    // ...
+}
+```
 
 ## Available Muscles
 
@@ -504,7 +531,7 @@ Muscle.allCases.filter { !$0.isDrawable }
 | Adductors | `.adductors` | `.hamstring` | Yes |
 | Neck | `.neck` | `.head` | Yes |
 
-`.rearDeltoid`, `.upperTrapezius` and `.lowerTrapezius` have no artwork yet; highlighting them paints nothing.
+`.rearDeltoid`, `.upperTrapezius` and `.lowerTrapezius` are drawn on the back views, and `.upperTrapezius` on the front views too.
 
 ## UIKit Integration
 
@@ -554,7 +581,7 @@ view.addSubview(legend)
 
 MuscleMap includes full VoiceOver support. Each muscle region is exposed as an accessibility element with:
 
-- Localized muscle name as the accessibility label
+- Localized muscle name as the accessibility label; muscles drawn on both sides get one element per side ("Biceps, Left", "Biceps, Right")
 - Selection state ("Selected" / "Not selected")
 - Tap and long press hints
 - Top-to-bottom traversal order (anatomical navigation)
@@ -606,7 +633,17 @@ A demo app is included in the `Example/` directory. Open `Example/MuscleMapDemoA
 
 - iOS 17.0+
 - macOS 14.0+
-- Swift 5.9+
+- Swift 5.9+ (builds in the Swift 6 language mode on a Swift 6 toolchain)
+
+## Development
+
+```bash
+swift test                                   # unit tests
+swift run --package-path Tools/ScreenshotGenerator ScreenshotGenerator Screenshots
+                                             # regenerate the README screenshots
+```
+
+Every push and pull request runs the tests, an iOS build, the demo app build and `pod lib lint` on GitHub Actions.
 
 ## License
 
