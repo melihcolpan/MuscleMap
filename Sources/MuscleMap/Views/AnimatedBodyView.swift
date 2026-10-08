@@ -117,8 +117,6 @@ struct AnimatedBodyContainer: View {
                 progress = 1.0
             }
         }
-        // Note: .onAppear removed — @State is now initialized from highlights in init(),
-        // so first Canvas draw has correct data without waiting for onAppear.
     }
 
     /// Blends previous and current highlights based on animation progress.
