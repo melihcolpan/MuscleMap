@@ -59,7 +59,11 @@ struct BodyRenderer {
         )
     }
 
-    private let pathCache = PathCache()
+    /// Shared across renderers: a `BodyRenderer` is rebuilt on every Canvas draw,
+    /// so an instance-owned cache would never serve a hit.
+    static let sharedPathCache = PathCache()
+
+    private var pathCache: PathCache { Self.sharedPathCache }
 
     func render(context: inout GraphicsContext, size: CGSize) {
         let viewBox = BodyPathProvider.viewBox(gender: gender, side: side)
@@ -78,11 +82,12 @@ struct BodyRenderer {
 
             let muscle = bodyPart.slug.muscle
             let highlight = muscle.flatMap { highlights[$0] }
+            if let m = muscle, m.isOverlayRegion, highlight == nil, !selectedMuscles.contains(m) { continue }
             let isSelected: Bool = {
                 guard let m = muscle else { return false }
                 if selectedMuscles.contains(m) { return true }
-                if hideSubGroups, m.isAlwaysVisibleSubGroup, let parent = m.parentGroup {
-                    return selectedMuscles.contains(parent)
+                if hideSubGroups, let host = m.defaultModeHost {
+                    return selectedMuscles.contains(host)
                 }
                 return false
             }()
@@ -175,10 +180,11 @@ struct BodyRenderer {
 
         let bodyParts = BodyPathProvider.paths(gender: gender, side: side)
 
-        // Test sub-groups first so they take priority over parent groups
+        // Test sub-groups (and overlay regions) first so they take priority over parent groups
         let sortedParts = bodyParts.sorted { a, b in
-            let aIsSub = a.slug.muscle?.isSubGroup ?? false
-            let bIsSub = b.slug.muscle?.isSubGroup ?? false
+            // Overlay regions sit on top of their host, so they are tested first as well
+            let aIsSub = a.slug.muscle.map { $0.isSubGroup || $0.isOverlayRegion } ?? false
+            let bIsSub = b.slug.muscle.map { $0.isSubGroup || $0.isOverlayRegion } ?? false
             if aIsSub != bIsSub { return aIsSub }
             return false
         }
@@ -189,8 +195,8 @@ struct BodyRenderer {
 
             // Always-visible sub-groups return parent when sub-groups are hidden
             let resolvedMuscle: Muscle
-            if hideSubGroups && muscle.isAlwaysVisibleSubGroup, let parent = muscle.parentGroup {
-                resolvedMuscle = parent
+            if hideSubGroups, let host = muscle.defaultModeHost {
+                resolvedMuscle = host
             } else {
                 resolvedMuscle = muscle
             }
@@ -228,7 +234,8 @@ struct BodyRenderer {
         var combinedRect: CGRect?
 
         for bodyPart in bodyParts {
-            guard bodyPart.slug.muscle == muscle else { continue }
+            guard let partMuscle = bodyPart.slug.muscle,
+                  partMuscle == muscle || partMuscle.regionHost == muscle else { continue }
             for pathString in bodyPart.allPaths {
                 let path = pathCache.path(for: pathString, scale: scale, offsetX: offsetX, offsetY: offsetY)
                 let rect = path.boundingRect
@@ -263,8 +270,8 @@ struct BodyRenderer {
         if let highlight {
             return highlight.fill
         }
-        // Sub-group inheritance: if no highlight on sub-group, use parent's highlight
-        if let muscle = slug.muscle, let parent = muscle.parentGroup,
+        // Sub-group / carved-region inheritance: if no highlight of its own, use the parent's or host's
+        if let muscle = slug.muscle, let parent = muscle.parentGroup ?? muscle.regionHost,
            let parentHighlight = highlights[parent] {
             return parentHighlight.fill
         }

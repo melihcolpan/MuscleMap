@@ -28,7 +28,7 @@ public struct BodyView: View {
     private let gender: BodyGender
     private let side: BodySide
     private var style: BodyViewStyle
-    private var highlights: [Muscle: MuscleHighlight]
+    var highlights: [Muscle: MuscleHighlight]
     private var selectedMuscles: Set<Muscle> = []
     private var onMuscleSelected: ((Muscle, MuscleSide) -> Void)?
 
@@ -310,12 +310,16 @@ extension BodyView {
     }
 
     /// Applies heatmap data using a color scale.
+    ///
+    /// The scale's own interpolation is used (so `.workoutStepped` renders stepped).
+    /// A non-linear interpolation set via `heatmapInterpolation(_:)` or a
+    /// `HeatmapConfiguration` takes precedence over it.
     public func heatmap(_ data: [MuscleIntensity], colorScale: HeatmapColorScale = .workout) -> BodyView {
         var copy = self
         let config = copy.heatmapConfig ?? .default
         let effectiveScale = HeatmapColorScale(
             colors: colorScale.colors,
-            interpolation: config.interpolation
+            interpolation: config.interpolation == .linear ? colorScale.interpolation : config.interpolation
         )
         for entry in data {
             if let threshold = config.threshold, entry.intensity < threshold {
