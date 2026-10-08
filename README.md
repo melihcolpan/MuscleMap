@@ -411,7 +411,12 @@ Button("Redo") { if let state = history.redo() { selectedMuscles = state } }
 
 ### Muscle Sub-Groups
 
-Sub-groups provide finer control over muscle regions. They inherit the parent muscle's highlight when no specific highlight is set, and take priority in hit testing.
+<p align="center">
+  <img src="https://raw.githubusercontent.com/melihcolpan/MuscleMap/main/Screenshots/front_subgroups.png" width="180" alt="Front Sub-Groups">
+  <img src="https://raw.githubusercontent.com/melihcolpan/MuscleMap/main/Screenshots/back_regions.png" width="180" alt="Back Sub-Groups">
+</p>
+
+Sub-groups provide finer control over muscle regions. Each one is cut from its parent muscle's artwork: the upper and lower chest, the front deltoid, the upper and lower abs, the serratus slips on the ribs, the top of the quadriceps (hip flexors) and the inner and outer quadriceps heads. They inherit the parent muscle's highlight when no specific highlight is set, and take priority in hit testing.
 
 **Always-visible sub-groups** (ankles, adductors, neck) are rendered by default but return their parent muscle on tap — so tapping the ankle area returns `.feet`, tapping the neck returns `.head`, etc.
 

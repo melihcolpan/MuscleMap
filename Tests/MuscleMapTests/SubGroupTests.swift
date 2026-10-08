@@ -393,3 +393,27 @@ final class SubGroupTests: XCTestCase {
         XCTAssertEqual(Muscle.allCases.count, 36)
     }
 }
+
+final class SubGroupShapeTests: XCTestCase {
+
+    /// Every sub-group shape is cut from its parent's artwork, so it must lie inside the parent.
+    func testSubGroupsLieInsideTheirParent() {
+        for gender in BodyGender.allCases {
+            for side in BodySide.allCases {
+                let parts = BodyPathProvider.paths(gender: gender, side: side)
+                for part in parts {
+                    guard let muscle = part.slug.muscle, let parent = muscle.parentGroup,
+                          !muscle.isAlwaysVisibleSubGroup else { continue }
+                    let parentRect = parts.filter { $0.slug.muscle == parent }
+                        .flatMap(\.allPaths)
+                        .map { PathBuilder.buildPath(from: $0, scale: 1, offsetX: 0, offsetY: 0).boundingRect }
+                        .reduce(CGRect.null) { $0.union($1) }
+                    for svg in part.allPaths {
+                        let rect = PathBuilder.buildPath(from: svg, scale: 1, offsetX: 0, offsetY: 0).boundingRect
+                        XCTAssertTrue(parentRect.insetBy(dx: -1, dy: -1).contains(rect), "\(muscle) outside \(parent) on \(gender) \(side)")
+                    }
+                }
+            }
+        }
+    }
+}

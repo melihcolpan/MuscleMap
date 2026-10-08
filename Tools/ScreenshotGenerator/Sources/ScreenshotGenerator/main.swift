@@ -90,6 +90,19 @@ let screenshots: [Screenshot] = [
                 MuscleIntensity(muscle: .forearm, intensity: 0.25),
             ], colorScale: .workoutStepped)
     },
+    Screenshot("front_subgroups") {
+        BodyView(gender: .male, side: .front)
+            .showSubGroups()
+            .highlight(.upperChest, color: .red)
+            .highlight(.lowerChest, color: .orange)
+            .highlight(.frontDeltoid, color: .purple)
+            .highlight(.upperAbs, color: .yellow)
+            .highlight(.lowerAbs, color: .green)
+            .highlight(.serratus, color: .pink)
+            .highlight(.hipFlexors, color: .teal)
+            .highlight(.innerQuad, color: .blue)
+            .highlight(.outerQuad, color: .indigo)
+    },
     Screenshot("back_regions") {
         BodyView(gender: .male, side: .back)
             .showSubGroups()

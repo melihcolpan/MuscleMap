@@ -70,6 +70,23 @@ final class SnapshotTests: XCTestCase {
         }
     }
 
+    func testFrontSubGroups() throws {
+        for gender in BodyGender.allCases {
+            let view = BodyView(gender: gender, side: .front)
+                .showSubGroups()
+                .highlight(.upperChest, color: Self.red)
+                .highlight(.lowerChest, color: Self.orange)
+                .highlight(.frontDeltoid, color: Self.purple)
+                .highlight(.upperAbs, color: Self.yellow)
+                .highlight(.lowerAbs, color: Self.teal)
+                .highlight(.serratus, color: Self.red)
+                .highlight(.hipFlexors, color: Self.teal)
+                .highlight(.innerQuad, color: Self.blue)
+                .highlight(.outerQuad, color: Self.purple)
+            try assertSnapshot(view, named: "\(gender.rawValue)_front_subgroups")
+        }
+    }
+
     // MARK: - Helpers
 
     private func assertSnapshot<V: View>(_ view: V, named name: String, file: StaticString = #filePath, line: UInt = #line) throws {
