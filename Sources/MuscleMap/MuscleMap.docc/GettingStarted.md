@@ -8,18 +8,20 @@ MuscleMap is a pure SwiftUI package with no external dependencies. It supports i
 
 ## Adding MuscleMap to Your Project
 
+With CocoaPods, add `pod 'MuscleMap', '~> 1.9.0'` to your `Podfile`. With Swift Package Manager:
+
 Add MuscleMap as a Swift Package dependency in Xcode:
 
 1. Open your project in Xcode.
 2. Go to **File → Add Package Dependencies**.
-3. Enter the repository URL.
+3. Enter `https://github.com/melihcolpan/MuscleMap.git`.
 4. Select the latest version and add it to your target.
 
 Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/AcademyOfGames/MuscleMap", from: "1.5.0")
+    .package(url: "https://github.com/melihcolpan/MuscleMap.git", from: "1.9.0")
 ]
 ```
 

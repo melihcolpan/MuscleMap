@@ -59,6 +59,8 @@ Available interpolation modes:
 - ``ColorInterpolation/step(count:)`` — discrete color bands
 - ``ColorInterpolation/custom(_:)`` — provide your own curve function
 
+A color scale can carry its own interpolation: ``HeatmapColorScale/workoutStepped`` is the workout scale with five steps, and ``HeatmapColorScale/thermalSmooth`` eases in and out. That interpolation is used by default. An interpolation set with ``BodyView/heatmapInterpolation(_:)`` or a ``HeatmapConfiguration`` takes precedence when it is not ``ColorInterpolation/linear``.
+
 ## Gradient Fill
 
 Enable intra-muscle gradient fills where each muscle shows a gradient from low to high intensity:

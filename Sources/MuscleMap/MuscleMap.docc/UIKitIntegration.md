@@ -34,7 +34,7 @@ class ViewController: UIViewController {
 
 ## Highlighting Muscles
 
-Use the ``MuscleMapView/highlight(_:color:opacity:)`` method with UIKit colors:
+Use the ``MuscleMapView/highlight(_:color:opacity:)-(Muscle,_,_)`` method with UIKit colors:
 
 ```swift
 muscleMap.highlight(.chest, color: .systemRed)
