@@ -35,6 +35,7 @@ BodyView(gender: .male, side: .front)
 - ``MuscleSide``
 - ``MuscleHighlight``
 - ``MuscleFill``
+- <doc:SubGroupsAndRegions>
 
 ### Heatmaps
 
@@ -60,3 +61,8 @@ BodyView(gender: .male, side: .front)
 - <doc:UIKitIntegration>
 - ``MuscleMapView``
 - ``HeatmapLegendUIView``
+
+### Accessibility and Performance
+
+- <doc:Accessibility>
+- <doc:Performance>
