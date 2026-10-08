@@ -52,6 +52,7 @@
 "accessibility.hint.longPress" = "길게 눌러 상세 보기";
 "accessibility.bodyMap" = "신체 근육 지도";
 "accessibility.muscleRegion" = "근육 부위";
+"accessibility.muscleWithSide" = "%1$@, %2$@";
 "accessibility.heatmapLegend" = "히트맵 강도 범례";
 
 /* Legend */

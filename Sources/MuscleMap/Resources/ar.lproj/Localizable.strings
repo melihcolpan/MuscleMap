@@ -52,6 +52,7 @@
 "accessibility.hint.longPress" = "اضغط مطولاً للتفاصيل";
 "accessibility.bodyMap" = "خريطة عضلات الجسم";
 "accessibility.muscleRegion" = "منطقة عضلية";
+"accessibility.muscleWithSide" = "%1$@، %2$@";
 "accessibility.heatmapLegend" = "مفتاح شدة الخريطة الحرارية";
 
 /* Legend */

@@ -95,3 +95,53 @@ final class AccessibilityTests: XCTestCase {
         }
     }
 }
+
+@MainActor
+final class AccessibilityPerSideTests: XCTestCase {
+
+    private let size = CGSize(width: 300, height: 600)
+
+    private func items(_ gender: BodyGender = .male, _ side: BodySide = .front) -> [MuscleAccessibilityItem] {
+        let overlay = BodyAccessibilityOverlay(
+            gender: gender, side: side, highlights: [:], style: .default,
+            selectedMuscles: [], size: size, onMuscleSelected: nil, onMuscleLongPressed: nil
+        )
+        let renderer = BodyRenderer(gender: gender, side: side, highlights: [:], style: .default, selectedMuscles: [])
+        return overlay.visibleMuscles(renderer: renderer)
+    }
+
+    func testPairedMusclesGetOneElementPerSide() {
+        let biceps = items().filter { $0.muscle == .biceps }
+        XCTAssertEqual(biceps.map(\.side), [.left, .right])
+        XCTAssertFalse(biceps[0].rect.intersects(biceps[1].rect))
+        XCTAssertLessThan(biceps[0].rect.midX, biceps[1].rect.midX)
+    }
+
+    func testSidesOfAMuscleAreAdjacent() {
+        for gender in BodyGender.allCases {
+            for side in BodySide.allCases {
+                let list = items(gender, side)
+                for (index, item) in list.enumerated() where item.side == .left {
+                    XCTAssertEqual(list[index + 1].muscle, item.muscle, "\(item.muscle) \(gender) \(side)")
+                    XCTAssertEqual(list[index + 1].side, .right)
+                }
+            }
+        }
+    }
+
+    func testIdentifiersAreUnique() {
+        for gender in BodyGender.allCases {
+            for side in BodySide.allCases {
+                let ids = items(gender, side).map(\.id)
+                XCTAssertEqual(ids.count, Set(ids).count)
+            }
+        }
+    }
+
+    func testLabels() {
+        let left = MuscleAccessibilityItem(muscle: .biceps, side: .left, rect: .zero)
+        XCTAssertEqual(left.label, "\(Muscle.biceps.displayName), \(MuscleSide.left.displayName)")
+        let single = MuscleAccessibilityItem(muscle: .abs, side: .both, rect: .zero)
+        XCTAssertEqual(single.label, Muscle.abs.displayName)
+    }
+}

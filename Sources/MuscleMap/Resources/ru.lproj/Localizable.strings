@@ -52,6 +52,7 @@
 "accessibility.hint.longPress" = "Долгое нажатие для подробностей";
 "accessibility.bodyMap" = "Карта мышц тела";
 "accessibility.muscleRegion" = "Область мышц";
+"accessibility.muscleWithSide" = "%1$@, %2$@";
 "accessibility.heatmapLegend" = "Легенда интенсивности тепловой карты";
 
 /* Legend */

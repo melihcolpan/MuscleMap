@@ -52,6 +52,7 @@
 "accessibility.hint.longPress" = "Detaylar için uzun basın";
 "accessibility.bodyMap" = "Vücut kas haritası";
 "accessibility.muscleRegion" = "Kas bölgesi";
+"accessibility.muscleWithSide" = "%1$@, %2$@";
 "accessibility.heatmapLegend" = "Isı haritası yoğunluk göstergesi";
 
 /* Legend */
