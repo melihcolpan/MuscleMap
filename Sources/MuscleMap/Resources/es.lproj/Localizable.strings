@@ -52,6 +52,7 @@
 "accessibility.hint.longPress" = "Mantén presionado para detalles";
 "accessibility.bodyMap" = "Mapa muscular del cuerpo";
 "accessibility.muscleRegion" = "Región muscular";
+"accessibility.muscleWithSide" = "%1$@, %2$@";
 "accessibility.heatmapLegend" = "Leyenda de intensidad del mapa de calor";
 
 /* Legend */

@@ -237,6 +237,12 @@ struct BodyRenderer {
 
     /// Returns the bounding rect of a muscle's combined paths in the given view size.
     func boundingRect(for muscle: Muscle, in size: CGSize) -> CGRect? {
+        boundingRect(for: muscle, muscleSide: nil, in: size)
+    }
+
+    /// Returns the bounding rect of one side of a muscle (`.both` = its common paths),
+    /// or of all its paths when `muscleSide` is nil.
+    func boundingRect(for muscle: Muscle, muscleSide: MuscleSide?, in size: CGSize) -> CGRect? {
         let viewBox = BodyPathProvider.viewBox(gender: gender, side: side)
         let scale = min(
             size.width / viewBox.size.width,
@@ -251,7 +257,14 @@ struct BodyRenderer {
         for bodyPart in bodyParts {
             guard let partMuscle = bodyPart.slug.muscle,
                   partMuscle == muscle || partMuscle.regionHost == muscle else { continue }
-            for pathString in bodyPart.allPaths {
+            let paths: [String]
+            switch muscleSide {
+            case nil: paths = bodyPart.allPaths
+            case .left: paths = bodyPart.left
+            case .right: paths = bodyPart.right
+            case .both: paths = bodyPart.common
+            }
+            for pathString in paths {
                 let path = pathCache.path(for: pathString, scale: scale, offsetX: offsetX, offsetY: offsetY)
                 let rect = path.boundingRect
                 guard !rect.isEmpty else { continue }

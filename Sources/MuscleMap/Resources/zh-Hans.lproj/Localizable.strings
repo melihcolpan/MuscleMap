@@ -52,6 +52,7 @@
 "accessibility.hint.longPress" = "长按查看详情";
 "accessibility.bodyMap" = "身体肌肉图";
 "accessibility.muscleRegion" = "肌肉区域";
+"accessibility.muscleWithSide" = "%1$@，%2$@";
 "accessibility.heatmapLegend" = "热力图强度图例";
 
 /* Legend */

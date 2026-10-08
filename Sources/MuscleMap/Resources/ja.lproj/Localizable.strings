@@ -52,6 +52,7 @@
 "accessibility.hint.longPress" = "長押しで詳細";
 "accessibility.bodyMap" = "筋肉マップ";
 "accessibility.muscleRegion" = "筋肉部位";
+"accessibility.muscleWithSide" = "%1$@、%2$@";
 "accessibility.heatmapLegend" = "ヒートマップ強度の凡例";
 
 /* Legend */

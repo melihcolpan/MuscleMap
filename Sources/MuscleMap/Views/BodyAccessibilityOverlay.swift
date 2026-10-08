@@ -34,7 +34,7 @@ struct BodyAccessibilityOverlay: View {
         let muscles = visibleMuscles(renderer: renderer)
 
         ZStack {
-            ForEach(muscles, id: \.muscle) { item in
+            ForEach(muscles, id: \.id) { item in
                 accessibilityElement(for: item)
             }
         }
@@ -53,26 +53,27 @@ struct BodyAccessibilityOverlay: View {
             .frame(width: item.rect.width, height: item.rect.height)
             .position(x: item.rect.midX, y: item.rect.midY)
             .accessibilityElement()
-            .accessibilityLabel(item.muscle.displayName)
+            .accessibilityLabel(item.label)
             .accessibilityValue(NSLocalizedString(valueKey, bundle: .module, comment: ""))
             .accessibilityHint(NSLocalizedString(hintKey, bundle: .module, comment: ""))
             .accessibilityAddTraits(traits)
             .accessibilityAction(.default) {
-                onMuscleSelected?(item.muscle, .both)
+                onMuscleSelected?(item.muscle, item.side)
             }
             .accessibilityAction(named: Text(NSLocalizedString("accessibility.hint.longPress", bundle: .module, comment: ""))) {
-                onMuscleLongPressed?(item.muscle, .both)
+                onMuscleLongPressed?(item.muscle, item.side)
             }
     }
 
     // MARK: - Private
 
     /// Returns visible muscles sorted top-to-bottom for natural VoiceOver traversal.
+    /// Muscles drawn on both sides get one element per side, read left then right.
     /// Excludes cosmetic parts (e.g., head).
-    private func visibleMuscles(renderer: BodyRenderer) -> [MuscleAccessibilityItem] {
+    func visibleMuscles(renderer: BodyRenderer) -> [MuscleAccessibilityItem] {
         let bodyParts = BodyPathProvider.paths(gender: gender, side: side)
         var seen = Set<Muscle>()
-        var items: [MuscleAccessibilityItem] = []
+        var groups: [[MuscleAccessibilityItem]] = []
 
         for bodyPart in bodyParts {
             guard let muscle = bodyPart.slug.muscle,
@@ -81,19 +82,40 @@ struct BodyAccessibilityOverlay: View {
             if hideSubGroups && muscle.isSubGroup && !muscle.isAlwaysVisibleSubGroup { continue }
             seen.insert(muscle)
 
-            if let rect = renderer.boundingRect(for: muscle, in: size), !rect.isEmpty {
-                items.append(MuscleAccessibilityItem(muscle: muscle, rect: rect))
+            let left = renderer.boundingRect(for: muscle, muscleSide: .left, in: size)
+            let right = renderer.boundingRect(for: muscle, muscleSide: .right, in: size)
+            var group: [MuscleAccessibilityItem] = []
+            if let left, let right, !left.isEmpty, !right.isEmpty {
+                group = [
+                    MuscleAccessibilityItem(muscle: muscle, side: .left, rect: left),
+                    MuscleAccessibilityItem(muscle: muscle, side: .right, rect: right),
+                ].sorted { $0.rect.minX < $1.rect.minX }
+            } else if let rect = renderer.boundingRect(for: muscle, in: size), !rect.isEmpty {
+                group = [MuscleAccessibilityItem(muscle: muscle, side: .both, rect: rect)]
             }
+            if !group.isEmpty { groups.append(group) }
         }
 
-        // Sort top-to-bottom (by minY) for anatomical VoiceOver traversal
-        items.sort { $0.rect.minY < $1.rect.minY }
-        return items
+        // Sort top-to-bottom (by minY) for anatomical VoiceOver traversal, keeping sides together
+        groups.sort { a, b in
+            a.map(\.rect.minY).min()! < b.map(\.rect.minY).min()!
+        }
+        return groups.flatMap { $0 }
     }
 }
 
-/// A muscle with its bounding rect for accessibility layout.
-fileprivate struct MuscleAccessibilityItem {
+/// A muscle (or one side of it) with its bounding rect for accessibility layout.
+struct MuscleAccessibilityItem {
     let muscle: Muscle
+    let side: MuscleSide
     let rect: CGRect
+
+    var id: String { "\(muscle.rawValue)-\(side.rawValue)" }
+
+    /// "Biceps" for a single region, "Biceps, Left" for one side of a pair.
+    var label: String {
+        guard side != .both else { return muscle.displayName }
+        let format = NSLocalizedString("accessibility.muscleWithSide", bundle: .module, comment: "Muscle name, then side")
+        return String(format: format, muscle.displayName, side.displayName)
+    }
 }
