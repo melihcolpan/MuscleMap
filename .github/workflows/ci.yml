@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Tests (macOS)
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Toolchain
+        run: |
+          xcodebuild -version
+          swift --version
+      - name: Run tests
+        run: swift test
+        env:
+          MUSCLEMAP_SNAPSHOT_FAILURES: ${{ runner.temp }}/snapshot-failures
+      - name: Upload failed snapshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failed-snapshots
+          path: ${{ runner.temp }}/snapshot-failures
+          if-no-files-found: ignore
+
+  ios:
+    name: iOS build
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build library
+        run: xcodebuild -scheme MuscleMap -destination 'generic/platform=iOS Simulator' build
+      - name: Build demo app
+        run: |
+          xcodebuild -project Example/MuscleMapDemoApp.xcodeproj -scheme MuscleMapDemoApp \
+            -destination 'generic/platform=iOS Simulator' build
+
+  podspec:
+    name: CocoaPods lint
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint podspec
+        run: pod lib lint MuscleMap.podspec --allow-warnings
