@@ -80,6 +80,16 @@ public struct BodyView: View {
         self.side = side
         self.style = style
         self.highlights = [:]
+        BodyRenderer.preloadArtwork()
+    }
+
+    /// Parses the body artwork in the background so the first `BodyView` appears faster.
+    ///
+    /// Creating a `BodyView` starts this automatically. Call it earlier, for example at
+    /// app launch, to have the artwork ready before the first body is shown.
+    /// Calling it more than once has no extra cost.
+    public static func preloadArtwork() {
+        BodyRenderer.preloadArtwork()
     }
 
     // MARK: - Body

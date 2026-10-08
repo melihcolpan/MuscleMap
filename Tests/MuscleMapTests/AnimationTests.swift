@@ -2,6 +2,7 @@ import XCTest
 import SwiftUI
 @testable import MuscleMap
 
+@MainActor
 final class AnimationTests: XCTestCase {
 
     // MARK: - BodyView Animation Modifier

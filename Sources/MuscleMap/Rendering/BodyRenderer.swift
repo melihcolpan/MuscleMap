@@ -65,6 +65,21 @@ struct BodyRenderer {
 
     private var pathCache: PathCache { Self.sharedPathCache }
 
+    private static let preloadOnce: Void = {
+        Task.detached(priority: .utility) {
+            for gender in BodyGender.allCases {
+                for side in BodySide.allCases {
+                    sharedPathCache.preload(BodyPathProvider.paths(gender: gender, side: side).flatMap(\.allPaths))
+                }
+            }
+        }
+    }()
+
+    /// Starts parsing the artwork of all four bodies in the background, once per app run.
+    static func preloadArtwork() {
+        _ = preloadOnce
+    }
+
     func render(context: inout GraphicsContext, size: CGSize) {
         let viewBox = BodyPathProvider.viewBox(gender: gender, side: side)
         let scale = min(
