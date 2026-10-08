@@ -33,7 +33,8 @@ let package = Package(
         .testTarget(
             name: "MuscleMapTests",
             dependencies: ["MuscleMap"],
-            path: "Tests/MuscleMapTests"
+            path: "Tests/MuscleMapTests",
+            exclude: ["__Snapshots__"]
         ),
     ],
     swiftLanguageModes: [.v6]
