@@ -43,6 +43,14 @@ jobs:
         run: |
           xcodebuild -project Example/MuscleMapDemoApp.xcodeproj -scheme MuscleMapDemoApp \
             -destination 'generic/platform=iOS Simulator' build
+      - name: Build documentation
+        run: |
+          set -o pipefail
+          xcodebuild docbuild -scheme MuscleMap -destination 'generic/platform=iOS Simulator' | tee docbuild.log
+          if grep -E '\.md:[0-9]+:[0-9]+: warning' docbuild.log; then
+            echo "::error::The documentation has warnings"
+            exit 1
+          fi
 
   podspec:
     name: CocoaPods lint
