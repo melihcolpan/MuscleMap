@@ -284,3 +284,27 @@ final class HeatmapTests: XCTestCase {
         XCTAssertEqual(GradientDirection.rightToLeft.endPoint, .leading)
     }
 }
+
+final class HeatmapScaleInterpolationTests: XCTestCase {
+
+    private let data = [MuscleIntensity(muscle: .abs, intensity: 0.7)]
+
+    func testColorScaleOverloadKeepsScaleInterpolation() {
+        let view = BodyView().heatmap(data, colorScale: .workoutStepped)
+        XCTAssertEqual(view.highlights[.abs]?.color, HeatmapColorScale.workoutStepped.color(for: 0.7))
+        XCTAssertNotEqual(view.highlights[.abs]?.color, HeatmapColorScale.workout.color(for: 0.7))
+    }
+
+    func testExplicitInterpolationOverridesScale() {
+        let view = BodyView()
+            .heatmapInterpolation(.easeIn)
+            .heatmap(data, colorScale: .workoutStepped)
+        let expected = HeatmapColorScale(colors: HeatmapColorScale.workout.colors, interpolation: .easeIn).color(for: 0.7)
+        XCTAssertEqual(view.highlights[.abs]?.color, expected)
+    }
+
+    func testConfigurationWithoutInterpolationUsesScaleInterpolation() {
+        let view = BodyView().heatmap(data, configuration: HeatmapConfiguration(colorScale: .workoutStepped))
+        XCTAssertEqual(view.highlights[.abs]?.color, HeatmapColorScale.workoutStepped.color(for: 0.7))
+    }
+}

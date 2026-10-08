@@ -48,3 +48,26 @@ final class PathCacheTests: XCTestCase {
         wait(for: [expectation], timeout: 5.0)
     }
 }
+
+final class SharedPathCacheTests: XCTestCase {
+
+    func testCacheIsSharedAcrossRenderers() {
+        let cache = BodyRenderer.sharedPathCache
+        cache.invalidate()
+        let size = CGSize(width: 200, height: 400)
+        let make = { BodyRenderer(gender: .male, side: .front, highlights: [:], style: .default, selectedMuscles: []) }
+        _ = make().boundingRect(for: .chest, in: size)
+        let afterFirst = cache.count
+        XCTAssertGreaterThan(afterFirst, 0)
+        _ = make().boundingRect(for: .chest, in: size)
+        XCTAssertEqual(cache.count, afterFirst, "a second renderer should reuse the cached paths")
+    }
+
+    func testCacheIsBounded() {
+        let cache = PathCache(maxEntries: 3)
+        for i in 0..<10 {
+            _ = cache.path(for: "M 0 0 L 100 100", scale: CGFloat(i + 1), offsetX: 0, offsetY: 0)
+        }
+        XCTAssertLessThanOrEqual(cache.count, 3)
+    }
+}

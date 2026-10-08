@@ -98,3 +98,89 @@ final class MuscleTests: XCTestCase {
         XCTAssertEqual(decodedGender, gender)
     }
 }
+
+final class MuscleDrawabilityTests: XCTestCase {
+
+    func testRhomboidsAndRotatorCuffAreDrawnOnBackViewsOnly() {
+        for muscle in [Muscle.rhomboids, .rotatorCuff] {
+            XCTAssertTrue(muscle.isDrawable)
+            for gender in BodyGender.allCases {
+                XCTAssertTrue(muscle.isDrawable(gender: gender, side: .back), "\(muscle) \(gender) back")
+                XCTAssertFalse(muscle.isDrawable(gender: gender, side: .front), "\(muscle) \(gender) front")
+            }
+        }
+    }
+
+    func testUndrawnSubGroupsAreReported() {
+        XCTAssertFalse(Muscle.rearDeltoid.isDrawable)
+        XCTAssertFalse(Muscle.upperTrapezius.isDrawable)
+        XCTAssertFalse(Muscle.lowerTrapezius.isDrawable)
+    }
+
+    func testDrawnMusclesAreReported() {
+        XCTAssertTrue(Muscle.chest.isDrawable)
+        XCTAssertTrue(Muscle.upperBack.isDrawable(gender: .male, side: .back))
+        XCTAssertFalse(Muscle.upperBack.isDrawable(gender: .male, side: .front))
+    }
+
+    func testCarvedRegionsKeepPublicGroupingUnchanged() {
+        XCTAssertNil(Muscle.rhomboids.parentGroup)
+        XCTAssertNil(Muscle.rotatorCuff.parentGroup)
+        XCTAssertFalse(Muscle.trapezius.subGroups.contains(.rhomboids))
+        XCTAssertFalse(Muscle.upperBack.subGroups.contains(.rotatorCuff))
+    }
+}
+
+final class CarvedRegionRenderingTests: XCTestCase {
+
+    private let size = CGSize(width: 400, height: 800)
+
+    private func renderer(_ highlights: [Muscle: MuscleHighlight] = [:], gender: BodyGender = .male) -> BodyRenderer {
+        BodyRenderer(gender: gender, side: .back, highlights: highlights, style: .default, selectedMuscles: [])
+    }
+
+    /// Muscles hit along a horizontal line through the middle of `region`.
+    /// (The rect's centre falls in the midline gap between the left and right pieces.)
+    private func hits(across region: Muscle, _ r: BodyRenderer) -> Set<Muscle> {
+        guard let rect = r.boundingRect(for: region, in: size) else { return [] }
+        var result = Set<Muscle>()
+        for x in stride(from: rect.minX, through: rect.maxX, by: 1) {
+            if let hit = r.hitTest(at: CGPoint(x: x, y: rect.midY), in: size) { result.insert(hit.0) }
+        }
+        return result
+    }
+
+    func testRegionTapResolvesToHostInDefaultMode() {
+        for gender in BodyGender.allCases {
+            let r = renderer(gender: gender)
+            for (region, host) in [(Muscle.rhomboids, Muscle.trapezius), (.rotatorCuff, .upperBack)] {
+                let found = hits(across: region, r)
+                XCTAssertTrue(found.contains(host), "\(region) \(gender): \(found)")
+                XCTAssertFalse(found.contains(region), "\(region) \(gender): \(found)")
+            }
+        }
+    }
+
+    func testRegionTapResolvesToRegionWhenSubGroupsShown() {
+        let r = BodyRenderer(gender: .male, side: .back, highlights: [:], style: .default, selectedMuscles: [], hideSubGroups: false)
+        XCTAssertTrue(hits(across: .rhomboids, r).contains(.rhomboids))
+        XCTAssertTrue(hits(across: .rotatorCuff, r).contains(.rotatorCuff))
+    }
+
+    func testHostBoundingRectIncludesRegion() {
+        let r = renderer()
+        let host = r.boundingRect(for: .trapezius, in: size)!
+        let region = r.boundingRect(for: .rhomboids, in: size)!
+        XCTAssertTrue(host.contains(region))
+    }
+
+    func testOverlayRegionIsNotDrawnUntilHighlighted() {
+        XCTAssertTrue(Muscle.rhomboids.isOverlayRegion)
+        XCTAssertFalse(Muscle.rotatorCuff.isOverlayRegion)
+        // The trapezius artwork stays whole: rhomboids lie entirely inside it.
+        let r = renderer()
+        let trap = r.boundingRect(for: .trapezius, in: size)!
+        let rh = r.boundingRect(for: .rhomboids, in: size)!
+        XCTAssertTrue(trap.contains(rh))
+    }
+}
