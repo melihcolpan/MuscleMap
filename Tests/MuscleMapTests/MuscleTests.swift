@@ -111,10 +111,20 @@ final class MuscleDrawabilityTests: XCTestCase {
         }
     }
 
-    func testUndrawnSubGroupsAreReported() {
-        XCTAssertFalse(Muscle.rearDeltoid.isDrawable)
-        XCTAssertFalse(Muscle.upperTrapezius.isDrawable)
-        XCTAssertFalse(Muscle.lowerTrapezius.isDrawable)
+    func testEveryMuscleIsDrawnSomewhere() {
+        XCTAssertEqual(Muscle.allCases.filter { !$0.isDrawable }, [])
+    }
+
+    func testNewSubGroupArtwork() {
+        for gender in BodyGender.allCases {
+            XCTAssertTrue(Muscle.rearDeltoid.isDrawable(gender: gender, side: .back))
+            XCTAssertTrue(Muscle.upperTrapezius.isDrawable(gender: gender, side: .back))
+            XCTAssertTrue(Muscle.upperTrapezius.isDrawable(gender: gender, side: .front))
+            XCTAssertTrue(Muscle.lowerTrapezius.isDrawable(gender: gender, side: .back))
+            XCTAssertTrue(Muscle.ankles.isDrawable(gender: gender, side: .back))
+        }
+        // The hair covers the whole head on the female back view
+        XCTAssertFalse(Muscle.head.isDrawable(gender: .female, side: .back))
     }
 
     func testDrawnMusclesAreReported() {
