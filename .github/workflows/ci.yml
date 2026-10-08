@@ -15,7 +15,7 @@ jobs:
     name: Tests (macOS)
     runs-on: macos-15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Toolchain
         run: |
           xcodebuild -version
@@ -26,7 +26,7 @@ jobs:
           MUSCLEMAP_SNAPSHOT_FAILURES: ${{ runner.temp }}/snapshot-failures
       - name: Upload failed snapshots
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: failed-snapshots
           path: ${{ runner.temp }}/snapshot-failures
@@ -36,7 +36,7 @@ jobs:
     name: iOS build
     runs-on: macos-15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Build library
         run: xcodebuild -scheme MuscleMap -destination 'generic/platform=iOS Simulator' build
       - name: Build demo app
@@ -56,6 +56,6 @@ jobs:
     name: CocoaPods lint
     runs-on: macos-15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Lint podspec
         run: pod lib lint MuscleMap.podspec --allow-warnings
