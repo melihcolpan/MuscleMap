@@ -214,10 +214,10 @@ final class SubGroupTests: XCTestCase {
     func testNewMusclePathsExistInMaleBack() {
         let paths = BodyPathProvider.paths(gender: .male, side: .back)
         let slugs = paths.map { $0.slug }
-        // rearDeltoid, upperTrapezius, lowerTrapezius removed (tiny circular placeholders)
-        XCTAssertFalse(slugs.contains(.rearDeltoid))
-        XCTAssertFalse(slugs.contains(.upperTrapezius))
-        XCTAssertFalse(slugs.contains(.lowerTrapezius))
+        // Drawn from the deltoid and trapezius outlines, around the rhomboid band
+        XCTAssertTrue(slugs.contains(.rearDeltoid))
+        XCTAssertTrue(slugs.contains(.upperTrapezius))
+        XCTAssertTrue(slugs.contains(.lowerTrapezius))
     }
 
     func testNewMusclePathsExistInFemaleFront() {
@@ -233,10 +233,10 @@ final class SubGroupTests: XCTestCase {
     func testNewMusclePathsExistInFemaleBack() {
         let paths = BodyPathProvider.paths(gender: .female, side: .back)
         let slugs = paths.map { $0.slug }
-        // rearDeltoid, upperTrapezius, lowerTrapezius removed (tiny circular placeholders)
-        XCTAssertFalse(slugs.contains(.rearDeltoid))
-        XCTAssertFalse(slugs.contains(.upperTrapezius))
-        XCTAssertFalse(slugs.contains(.lowerTrapezius))
+        // Drawn from the deltoid and trapezius outlines, around the rhomboid band
+        XCTAssertTrue(slugs.contains(.rearDeltoid))
+        XCTAssertTrue(slugs.contains(.upperTrapezius))
+        XCTAssertTrue(slugs.contains(.lowerTrapezius))
     }
 
     // MARK: - hideSubGroups
