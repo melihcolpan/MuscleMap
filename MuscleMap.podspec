@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = "17.0"
   s.osx.deployment_target = "14.0"
-  s.swift_version = "5.9"
+  s.swift_versions = ["5.9", "6.0"]
 
   s.source       = { :git => "https://github.com/melihcolpan/MuscleMap.git", :tag => s.version.to_s }
   s.source_files = "Sources/MuscleMap/**/*.swift"

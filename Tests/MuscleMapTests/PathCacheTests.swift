@@ -71,3 +71,41 @@ final class SharedPathCacheTests: XCTestCase {
         XCTAssertLessThanOrEqual(cache.count, 3)
     }
 }
+
+final class UnitPathCacheTests: XCTestCase {
+
+    /// Scaling a path parsed at unit scale must give the same shape as parsing at that scale.
+    func testScaledUnitPathMatchesDirectParse() {
+        let cache = PathCache()
+        let scale: CGFloat = 0.37, offsetX: CGFloat = -12.5, offsetY: CGFloat = 40
+        for gender in BodyGender.allCases {
+            for side in BodySide.allCases {
+                for svg in BodyPathProvider.paths(gender: gender, side: side).flatMap(\.allPaths) {
+                    let cached = cache.path(for: svg, scale: scale, offsetX: offsetX, offsetY: offsetY).boundingRect
+                    let direct = PathBuilder.buildPath(from: svg, scale: scale, offsetX: offsetX, offsetY: offsetY).boundingRect
+                    XCTAssertEqual(cached.minX, direct.minX, accuracy: 0.001)
+                    XCTAssertEqual(cached.minY, direct.minY, accuracy: 0.001)
+                    XCTAssertEqual(cached.width, direct.width, accuracy: 0.001)
+                    XCTAssertEqual(cached.height, direct.height, accuracy: 0.001)
+                }
+            }
+        }
+    }
+
+    func testEachPathIsParsedOnceAcrossSizes() {
+        let cache = PathCache()
+        let svg = "M 0 0 L 100 100 L 0 100 Z"
+        _ = cache.path(for: svg, scale: 1, offsetX: 0, offsetY: 0)
+        _ = cache.path(for: svg, scale: 2, offsetX: 5, offsetY: 5)
+        XCTAssertEqual(cache.parsedCount, 1)
+        XCTAssertEqual(cache.count, 2)
+    }
+
+    func testPreloadParsesWithoutSizing() {
+        let cache = PathCache()
+        let paths = BodyPathProvider.paths(gender: .female, side: .back).flatMap(\.allPaths)
+        cache.preload(paths)
+        XCTAssertEqual(cache.parsedCount, Set(paths).count)
+        XCTAssertEqual(cache.count, 0)
+    }
+}

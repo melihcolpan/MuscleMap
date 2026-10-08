@@ -2,6 +2,7 @@ import XCTest
 import SwiftUI
 @testable import MuscleMap
 
+@MainActor
 final class HeatmapTests: XCTestCase {
 
     // MARK: - MuscleIntensity
@@ -285,6 +286,7 @@ final class HeatmapTests: XCTestCase {
     }
 }
 
+@MainActor
 final class HeatmapScaleInterpolationTests: XCTestCase {
 
     private let data = [MuscleIntensity(muscle: .abs, intensity: 0.7)]

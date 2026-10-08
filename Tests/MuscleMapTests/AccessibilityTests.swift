@@ -1,6 +1,7 @@
 import XCTest
 @testable import MuscleMap
 
+@MainActor
 final class AccessibilityTests: XCTestCase {
 
     func testAccessibilityOverlayCreatesForAllCombinations() {

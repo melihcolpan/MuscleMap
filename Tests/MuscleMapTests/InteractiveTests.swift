@@ -2,6 +2,7 @@ import XCTest
 import SwiftUI
 @testable import MuscleMap
 
+@MainActor
 final class InteractiveTests: XCTestCase {
 
     // MARK: - MuscleSelection

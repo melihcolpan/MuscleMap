@@ -311,7 +311,7 @@ struct AnimatedBodyCanvas: View, Animatable {
     let selectionPulseFactor: Double
     var hideSubGroups: Bool = true
 
-    var animatableData: Double {
+    nonisolated var animatableData: Double {
         get { animationProgress }
         set { animationProgress = newValue }
     }
