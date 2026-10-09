@@ -1,4 +1,8 @@
 version: 1
 builder:
   configs:
+    # Build the documentation for iOS: the UIKit integration (MuscleMapView,
+    # HeatmapLegendUIView) only exists there, and a macOS build leaves its
+    # symbol links unresolved.
     - documentation_targets: [MuscleMap]
+      platform: ios
