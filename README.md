@@ -61,6 +61,8 @@ pod 'MuscleMap', '~> 1.9.0'
 
 Then run `pod install`.
 
+> **Note:** CocoaPods Trunk becomes read-only on December 2, 2026. Versions already published (up to 1.9.0) keep working, but new releases ship through Swift Package Manager only. If you're starting a new project, use SwiftPM.
+
 ## Quick Start
 
 ```swift
